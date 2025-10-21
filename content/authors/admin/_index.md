@@ -1,13 +1,13 @@
 ---
 # Display name
-title: Alex Johnson
+title: Meng Zhang
 
 # Name pronunciation (optional)
 name_pronunciation: ''
 
 # Full name (for SEO)
-first_name: Alex
-last_name: Johnson
+first_name: Meng
+last_name: Zhang
 
 # Pronouns (optional)
 pronouns: he/him
@@ -23,80 +23,72 @@ superuser: true
 highlight_name: true
 
 # Role/position/tagline
-role: Senior AI Research Scientist
+role: Human Factors Engineer
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
-  - name: Meta AI
-    url: https://ai.meta.com/
+  - name:  
+    url:  
 
 # Social network links
 # Need to use another icon? Simply download the SVG icon to your `assets/media/icons/` folder.
 profiles:
   - icon: at-symbol
-    url: 'mailto:alex.johnson@meta.com'
+    url: 'mailto:zhangmeng43@gmail.com'
     label: E-mail Me
-  - icon: brands/x
-    url: https://twitter.com/AlexAIResearch
-  - icon: brands/github
-    url: https://github.com/alexjohnsonai
   - icon: brands/linkedin
-    url: https://www.linkedin.com/in/alexjohnsonai/
+    url: https://www.linkedin.com/in/meng-zhang-a56960a9/
   - icon: academicons/google-scholar
-    url: https://scholar.google.com/citations?user=alexjohnson
+    url: https://scholar.google.com/citations?user=zhangmeng43
   - icon: academicons/orcid
-    url: https://orcid.org/0000-0002-1825-0097
+    url: https://orcid.org/0000-0003-1655-764X
 
 interests:
-  - Large Language Models
-  - Computer Vision
-  - Reinforcement Learning
-  - AI Ethics
+  - User Study
+  - Road Safety Research
+  - Data Analysis
+  - Machine Learning
 
 education:
-  - area: PhD Computer Science (AI Focus)
-    institution: Stanford University
-    date_start: 2015-09-01
-    date_end: 2019-06-30
+  - area: Dr. rer. nat.Psychology (Emotions Focus)
+    institution: Technical University of Braunschweig
+    date_start: 2019-04
+    date_end: 2023-11
     summary: |
-      Thesis on _Scaling Laws for Neural Language Models_. Supervised by Prof. Andrew Ng. Published 5 papers in NeurIPS and ICML, with 2 best paper awards.
+      Supported appraisal theory of emotion and advocated for multidimensional and multimodal emotion measurement
     button:
       text: 'Read Thesis'
-      url: 'https://example.com/thesis.pdf'
-  - area: MS Computer Science
-    institution: Carnegie Mellon University
-    date_start: 2013-09-01
-    date_end: 2015-05-31
+      url: ''
+  - area: MS Human Factors
+    institution: Technical University of Berlin
+    date_start: 2012-04
+    date_end: 2016-04
     summary: |
-      GPA: 4.0/4.0
-
-      Specialized in machine learning and robotics.
-  - area: BS Computer Science
-    institution: MIT
-    date_start: 2009-09-01
-    date_end: 2013-05-31
+      Analyzed emotional states based on facial expressions and physiological signals
+  - area: BS Psychology
+    institution: East China Normal University
+    date_start: 2006-09
+    date_end: 2010-07
     summary: |
-      GPA: 3.9/4.0
-
-      Minored in Mathematics. President of AI Club.
+      Experimental Psychology, Cognitive Psychology, Statistics, Mathematics
 
 work:
-  - position: Senior AI Research Scientist
-    company_name: Meta AI
-    company_url: 'https://ai.meta.com/'
+  - position: Senior Data Analyst
+    company_name: GETEC Group
+    company_url: 'https://www.getec.de/'
     company_logo: ''
-    date_start: 2020-01-01
-    date_end: ''
+    date_start: 2025-01
+    date_end: '2025-04'
     summary: |2-
-      Leading research on multimodal AI systems. Contributed to Llama 2 and other open-source models. 50+ citations in 3 years.
-  - position: AI Research Intern
-    company_name: OpenAI
-    company_url: 'https://openai.com/'
+      Built automated reporting pipelines, improving data availability and reducing manual reporting time
+  - position: Research Associate
+    company_name: German Aerospace Center, Institute of Transportation Systems
+    company_url: 'https://www.dlr.de/de/ts'
     company_logo: ''
-    date_start: 2019-06-01
-    date_end: 2019-12-31
+    date_start: 2016-07
+    date_end: 2024-09
     summary: |
-      Worked on GPT-3 scaling. Co-authored paper on prompt engineering.
+      Analyzed interactions between road users and developed models to predict intentions and risks using both real-world and simulated driving data
 
 # Skills
 # Add your own SVG icons to `assets/media/icons/`
