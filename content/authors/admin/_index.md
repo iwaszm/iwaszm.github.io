@@ -52,8 +52,8 @@ interests:
 education:
   - area: Dr. rer. nat.Psychology (Emotions Focus)
     institution: Technical University of Braunschweig
-    date_start: 2019-04
-    date_end: 2023-11
+    date_start: 2019-04-01
+    date_end: 2023-11-13
     summary: |
       Supported appraisal theory of emotion and advocated for multidimensional and multimodal emotion measurement
     button:
@@ -61,14 +61,14 @@ education:
       url: ''
   - area: MS Human Factors
     institution: Technical University of Berlin
-    date_start: 2012-04
-    date_end: 2016-04
+    date_start: 2012-04-01
+    date_end: 2016-04-01
     summary: |
       Analyzed emotional states based on facial expressions and physiological signals
   - area: BS Psychology
     institution: East China Normal University
-    date_start: 2006-09
-    date_end: 2010-07
+    date_start: 2006-09-01
+    date_end: 2010-07-31
     summary: |
       Experimental Psychology, Cognitive Psychology, Statistics, Mathematics
 
@@ -77,16 +77,16 @@ work:
     company_name: GETEC Group
     company_url: 'https://www.getec.de/'
     company_logo: ''
-    date_start: 2025-01
-    date_end: '2025-04'
+    date_start: 2025-01-01
+    date_end: 2025-04-30
     summary: |2-
       Built automated reporting pipelines, improving data availability and reducing manual reporting time
   - position: Research Associate
     company_name: German Aerospace Center, Institute of Transportation Systems
     company_url: 'https://www.dlr.de/de/ts'
     company_logo: ''
-    date_start: 2016-07
-    date_end: 2024-09
+    date_start: 2016-07-01
+    date_end: 2024-09-30
     summary: |
       Analyzed interactions between road users and developed models to predict intentions and risks using both real-world and simulated driving data
 
