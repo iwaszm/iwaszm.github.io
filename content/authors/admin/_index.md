@@ -14,7 +14,7 @@ pronouns: he/him
 
 # Status emoji
 status:
-  icon: 🚀
+  icon:
 
 # Is this the primary user of the site?
 superuser: true
@@ -58,13 +58,16 @@ education:
       Supported appraisal theory of emotion and advocated for multidimensional and multimodal emotion measurement
     button:
       text: 'Read Thesis'
-      url: ''
+      url: 'https://elib.dlr.de/200450/'
   - area: Human Factors M.S. 
     institution: Technical University of Berlin
     date_start: 2012-04-01
     date_end: 2016-04-01
     summary: |
       Analyzed emotional states based on facial expressions and physiological signals
+    button:
+      text: 'Read Thesis'
+      url: https://elib.dlr.de/104499/
   - area: Psychology B.S. 
     institution: East China Normal University
     date_start: 2006-09-01
@@ -126,4 +129,4 @@ languages:
 
 ---
 
-Meng is a Human Factors researcher with a background in psychology, focusing on driver state monitoring and human–machine interaction. Experienced in designing and conducting user studies that combine behavioral and physiological data (ECG, EDA, eye-tracking, facial expressions) to understand emotion, attention, and safety in traffic contexts. Skilled in data analysis, machine learning, and visualization using R and Python.
+Meng is a Human Factors researcher with a background in psychology, focusing on driver state monitoring and human-machine interaction. Experienced in designing and conducting user studies that combine behavioral and physiological data (ECG, EDA, eye-tracking, facial expressions) to understand emotion, attention, and safety in traffic contexts. Skilled in data analysis, machine learning, and visualization using R and Python.

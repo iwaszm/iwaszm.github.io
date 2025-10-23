@@ -1,6 +1,6 @@
 ---
-title: 'Experience'
-date: 2023-10-24
+title: 'Resume'
+date: 2025-10-21
 type: landing
 
 design:
