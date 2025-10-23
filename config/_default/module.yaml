@@ -23,9 +23,3 @@ mounts:
     target: layouts
   - source: assets
     target: assets
-
-module:
-  vendor: true
-  # （可选）要求 extended 版本
-  hugoVersion:
-    extended: true
