@@ -107,9 +107,7 @@ skills:
       - name: Statistics
         description: ''
         icon: 
-      - name: EDA/ECG
-        description: ''
-        icon: 
+
   - name: TOOLS
     items:
       - name: R & Python
@@ -118,7 +116,9 @@ skills:
       - name: Power BI
         description: ''
         icon: 
-
+      - name: Confluence
+        description: ''
+        icon: 
 languages:
   - name: English
     percent: 80
@@ -129,4 +129,4 @@ languages:
 
 ---
 
-Meng is a Human Factors researcher with a background in psychology, focusing on driver state monitoring and human-machine interaction. Experienced in designing and conducting user studies that combine behavioral and physiological data (ECG, EDA, eye-tracking, facial expressions) to understand emotion, attention, and safety in traffic contexts. Skilled in data analysis, machine learning, and visualization using R and Python.
+Meng is a Human Factors researcher with a background in psychology, focusing on driver state monitoring and human-machine interaction. Experienced in designing and conducting user studies that combine behavioral (e.g., fleet data) and physiological data (e.g., ECG, EDA and eye-tracking) to understand emotion, intention, and safety in traffic contexts. Skilled in data analysis, machine learning, and visualization using R and Python.
