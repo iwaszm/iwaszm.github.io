@@ -1,1 +1,4 @@
 baseURL: "https://zhangmeng43.com/"
+goldmark:
+  renderer:
+    unsafe: true

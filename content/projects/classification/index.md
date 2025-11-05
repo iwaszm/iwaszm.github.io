@@ -52,7 +52,11 @@ Following are 10 manually labeled comments, spanning multiple languages, sentime
 </div>
 
 ### Performance
-![Classification performance](plot.png)
+<iframe style="width:100%; height: 500px; border: 0;"
+        loading="lazy"
+        allowfullscreen 
+        src="highchart.html"></iframe>
+
 
 ### Next Steps
 <div class="text-base  text-justify">
