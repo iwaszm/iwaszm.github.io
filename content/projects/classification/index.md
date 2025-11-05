@@ -51,7 +51,11 @@ Following are 10 manually labeled comments, spanning multiple languages, sentime
 | CN: 功能正常，但感觉有点卡。                                                   | positive            | positive      | positive      | user interface  | **functionality** | user interface |
 </div>
 
+<div class="text-base  text-justify">
+
 ### Performance
+
+Classification performance was compared across three models, **Model A** (`facebook/bart-large-mnli`) achieved higher scores in both the _Sentiment_ and _Category_ dimensions.
 <iframe style="width:100%; height: 500px; border: 0;"
         loading="lazy"
         allowfullscreen 
@@ -59,7 +63,7 @@ Following are 10 manually labeled comments, spanning multiple languages, sentime
 
 
 ### Next Steps
-<div class="text-base  text-justify">
+
   App Store and Google Play both provide public access to app reviews. 
   By identifying the corresponding app ID (for example, YouTube’s App Store ID is 544007664), 
   these review data can be extracted automatically. Combined with the comment classification 
