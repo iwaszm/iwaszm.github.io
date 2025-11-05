@@ -22,7 +22,7 @@ publication: "International Journal of Environmental Research and Public Health"
 publication_short: "IJERPH"
 
 
-abstract: Nowadays, vehicle assistance systems may assess the risks of the traffic situation with the help of advanced sensor technology and optimized algorithms. However, the passengers’ feelings of risk in the vehicle have been mostly neglected. According to the Component Process Model of emotions, during the feeling of risk, novelty is one of the relevant event appraisals leading to particular physiological and facial responses. In order to identify whether or not indicators for novelty appraisal may be used for detecting the feeling of risk of vehicle occupants, we investigated physiological responses and facial expressions of individuals experiencing the feeling of risk with different levels of novelty. This secondary analysis of an earlier simulator study revealed that pupil diameter amplitude, skin conductance level changes, and changes in and amplitude of activity in facial expressions (the inner and outer brow raiser, brow lowerer, upper lid raiser and lid tightener) were correlated with the reduction in the novelty, suggesting that they could indicate the novelty of the feeling of risk of vehicle occupants. Hence, this research provides evidence for the novelty appraisal of the feeling of risk. Furthermore, it informs research on affect-aware systems to identify and reduce the feeling of risk of vehicle occupants in order to help to keep trust in automated vehicles high.
+abstract: 
 
 # Summary. An optional shortened abstract.
 summary: Physiological and facial indicators of novelty appraisal were linked to the feeling of risk in vehicle occupants, providing insights for developing affect-aware systems that help maintain trust in automated vehicles.
@@ -57,3 +57,31 @@ projects: []
 slides: ""
 ---
 
+<div class="text-base text-justify">
+
+Nowadays, **vehicle assistance systems** may assess the risks of the traffic situation with the help of advanced sensor technology and optimized algorithms.  
+However, the **passengers’ feelings of risk** in the vehicle have been mostly neglected.
+
+---
+
+According to the *Component Process Model of emotions*, during the feeling of risk, **novelty** is one of the relevant event appraisals leading to particular **physiological and facial responses**.
+
+To identify whether indicators for **novelty appraisal** may be used for detecting the **feeling of risk of vehicle occupants**, we investigated **physiological responses** and **facial expressions** of individuals experiencing the feeling of risk with different levels of novelty.
+
+---
+
+### Key Findings
+This secondary analysis of an earlier simulator study revealed that:
+
+- **Pupil diameter amplitude**  
+- **Skin conductance level (SCL) changes**  
+- **Facial expression activity** (inner and outer brow raiser, brow lowerer, upper lid raiser, and lid tightener)  
+
+were **correlated with the reduction in novelty**, suggesting that these indicators could reflect the *novelty appraisal* of the feeling of risk in vehicle occupants.
+
+---
+
+Hence, this research provides **evidence for the novelty appraisal** of the feeling of risk.  
+Furthermore, it informs research on **affect-aware systems**, which aim to identify and reduce passengers’ feelings of risk - ultimately helping to **maintain trust in automated vehicles**.
+
+</div>

@@ -23,7 +23,7 @@ publication: "Automotive Innovation"
 publication_short: "Automotive Innovation"
 
 
-abstract: Before highly automated vehicles (HAVs) become part of everyday traffic, their safety has to be proven. The use of human performance as a benchmark represents a promising approach, but appropriate methods to quantify and compare human and HAV performance are rare. By adapting the method of constant stimuli, a scenario-based approach to quantify the limit of (human) performance is developed. The method is applied to a driving simulator study, in which participants are repeatedly confronted with a cut-in manoeuvre on a highway. By systematically manipulating the criticality of the manoeuvre in terms of time to collision, humans’ collision avoidance performance is measured. The limit of human performance is then identified by means of logistic regression. The calculated regression curve and its inflection point can be used for direct comparison of human and HAV performance. Accordingly, the presented approach represents one means by which HAVs’ safety performance could be proven.
+abstract: 
 
 # Summary. An optional shortened abstract.
 summary: A scenario-based method was introduced to quantify human driving performance limits, providing a benchmark to compare and validate the safety performance of highly automated vehicles.
@@ -58,3 +58,27 @@ projects: []
 slides: ""
 ---
 
+<div class="text-base text-justify">
+
+Before **highly automated vehicles (HAVs)** become part of everyday traffic, their **safety must be proven**.  
+The use of **human performance as a benchmark** represents a promising approach - yet, appropriate methods to **quantify and compare human and HAV performance** remain rare.
+
+---
+
+By adapting the *method of constant stimuli*, a **scenario-based approach** to quantify the **limit of human performance** is developed.  
+This method is applied in a **driving simulator study**, where participants repeatedly face a **cut-in manoeuvre** on a highway.
+
+By systematically manipulating the **criticality** of the manoeuvre - defined in terms of *time to collision (TTC)* - humans’ **collision-avoidance performance** can be measured.
+
+---
+
+### Key Method
+- The **limit of human performance** is identified using **logistic regression**.  
+- The **regression curve** and its **inflection point** allow direct comparison between **human** and **HAV** performance.
+
+---
+
+### Conclusion
+The presented approach provides a practical means by which **HAVs’ safety performance** can be evaluated and proven against **human driving capabilities**.
+
+</div>
