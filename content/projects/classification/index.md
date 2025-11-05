@@ -9,6 +9,7 @@ tags:
   - Text Mining
 summary: "Interactive report of multilingual YouTube reviews using Hugging Face models."
 
+
 ---
 
 ### Summary
@@ -27,6 +28,8 @@ Three pre-trained NLI-based transformer models are used for comparison:
 ### 10 Comments to Classify
 Following are 10 manually labeled comments, spanning multiple languages, sentiment types, and categories. Each model classifies each comment for both sentiment and category, correct results are shown in **bold** in the table below.
 
+<div class="overflow-x-auto text-sm">
+
 | Comment                                                                 |      Sentiment      |               |               |      Category       |               |               |
 |------------------------------------------------------------------------|---------------------|---------------|---------------|---------------------|---------------|---------------|
 |                                                                        | A                   | B             | C             | A                   | B             | C             |
@@ -41,4 +44,4 @@ Following are 10 manually labeled comments, spanning multiple languages, sentime
 | Zu viele nervige Werbungen, es macht keinen Spaß mehr.                | **negative**        | **negative**  | positive      | **ads**             | **ads**       | functionality |
 | 功能正常，但感觉有点卡。                                                   | positive            | positive      | positive      | **user interface**  | **functionality** | user interface |
 
-
+</div>
