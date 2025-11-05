@@ -1,5 +1,5 @@
 ---
-title: Comment Classification Demo
+title: Text-Mining Demo
 date: 2025-10-26
 toc: true
 type: "project"
@@ -7,30 +7,30 @@ tags:
   - R
   - Markdown
   - Text Mining
-summary: "Interactive report of multilingual YouTube reviews using Hugging Face models."
+summary: "Reviews text-mining using Hugging Face models."
 
 
 ---
 
-#### Summary
-<div class="text-sm">
+### Summary
+<div class="text-base  text-justify">
 This demo explores the use of _Hugging Face zero-shot text classification models_ to analyze multilingual user comments (e.g., YouTube). Two classification dimensions are focused on:
 
 - **Sentiment**: whether the comment is positive, neutral, or negative  
 - **Category**: what the comment refers to (functionality, UI, or ads)
-</div>
 
-#### Selected Models
-<div class="text-sm">
+---
+
+### Selected Models
 Three pre-trained NLI-based transformer models are used for comparison:
 
 - Model A: `facebook/bart-large-mnli`  
 - Model B: `joeddav/xlm-roberta-large-xnli`  
 - Model C: `typeform/distilbert-base-uncased-mnli`
-</div>
 
-#### Classification
-<div class="text-sm">
+---
+
+### Classification
 Following are 10 manually labeled comments, spanning multiple languages, sentiment types, and categories. Each model classifies each comment for both sentiment and category, correct results are shown in **bold** in the table below.
 </div>
 
@@ -49,14 +49,13 @@ Following are 10 manually labeled comments, spanning multiple languages, sentime
 | Ads are skippable now, so it’s not too bad.                            | positive            | positive      | positive      | **ads**             | functionality | **ads**       |
 | DE: Zu viele nervige Werbungen, es macht keinen Spaß mehr.                | **negative**        | **negative**  | positive      | **ads**             | **ads**       | functionality |
 | CN: 功能正常，但感觉有点卡。                                                   | positive            | positive      | positive      | user interface  | **functionality** | user interface |
-
 </div>
 
-#### Performance
+### Performance
 ![Classification performance](plot.png)
 
-#### Next Steps
-<div class="text-sm text-justify">
+### Next Steps
+<div class="text-base  text-justify">
   App Store and Google Play both provide public access to app reviews. 
   By identifying the corresponding app ID (for example, YouTube’s App Store ID is 544007664), 
   these review data can be extracted automatically. Combined with the comment classification 
