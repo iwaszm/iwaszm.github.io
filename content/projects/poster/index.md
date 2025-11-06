@@ -1,5 +1,5 @@
 ---
-title: Poster
+title: Modeling Human-Like Interaction Between Cyclists and Vehicles
 date: 2023-10-26
 toc: true
 math: true
