@@ -4,9 +4,8 @@ date: 2016-04-12
 toc: true
 type: "project"
 tags:
-  - R
-  - Markdown
-  - Text Mining
+  - In-Vehicle Emotions
+  - Clustering
 summary: "Understanding driver emotions is essential for improving road safety and in-vehicle assistance systems. One promising approach is using facial expressions captured and analyzed through the Facial Action Coding System (FACS) to detect emotional states like frustration or stress. In this study, I investigated how specific facial muscle movements relate to emotional experiences during different driving scenarios. I identified specific AUs associated with frustration."
 image:
   caption: 'AI generated'
