@@ -102,9 +102,9 @@ The K-Means process works in following steps:
         loading="lazy" allowfullscreen></iframe>
 
 
-Facial expression data were grouped into **five clusters** using K-Means clustering. Each cluster represents a common combination of Action Units (AUs), potentially reflecting a distinct emotional pattern. The **radar chart** below shows the *average activation level* (cluster centers) for each AU across the five clusters.
+Facial expression data were grouped into **five clusters** using K-Means clustering. Each cluster represents a common combination of Action Units (AUs), potentially reflecting a distinct emotional pattern. The **radar chart** above shows the *average activation level* (cluster centers) for each AU across the five clusters.
 
-**Cluster 4** was the **only one that appeared significantly more often** during traffic jams than in smooth driving.
+**Cluster 4** was the **only one that appeared significantly more often** during traffic jams.
 
 Cluster 4 is mainly defined by the co-activation of:
 
@@ -116,7 +116,7 @@ This particular combination may represent the **facial expression of frustration
 
 ### What does a "frustrated face" look like?
 
-[back to top](#top)
+**AU9 + AU18 + AU24 = [The Face We’re Looking For](#top)**
 
 
 </div>
