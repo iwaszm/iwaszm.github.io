@@ -128,5 +128,6 @@ languages:
     percent: 100
 
 ---
-
-Meng is a Human Factors researcher with a background in psychology, focusing on driver state monitoring and human-machine interaction. Experienced in designing and conducting user studies that combine behavioral (e.g., fleet data) and physiological data (e.g., ECG, EDA and eye-tracking) to understand emotion, intention, and safety in traffic contexts. Skilled in data analysis, machine learning, and visualization using R and Python.
+<div class="text-base text-justify leading-relaxed max-w-prose mx-auto">
+Meng is a Human Factors researcher with a background in psychology, focusing on translating multi-modal data into insights. He investigates human behavior and interaction in traffic systems and has experience designing and conducting user studies that combine behavioral data (e.g., fleet data and eye tracking), physiological data, and qualitative data to understand emotion, intention, and safety in traffic contexts. He is skilled in data analysis, statistics, machine learning, and data visualization using R and Python.
+</div>
