@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>我的动态视差展示</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    
+    <style>
+        /* 简单的样式，让画布居中 */
+        body {
+            display: flex;
+            justify_content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        function setup() {
+            // 创建画布
+            createCanvas(600, 400);
+        }
+
+        function draw() {
+            background(255);
+            
+            // --- 你的视差逻辑写在这里 ---
+            // 这是一个简单的示例：根据鼠标位置移动圆圈
+            let parX = mouseX * 0.5; 
+            let parY = mouseY * 0.5;
+            
+            fill(0);
+            ellipse(width/2 + (mouseX - width/2) * 0.1, height/2 + (mouseY - height/2) * 0.1, 50, 50);
+            
+            fill(100, 100, 255);
+            ellipse(width/2 + (mouseX - width/2) * 0.3, height/2 + (mouseY - height/2) * 0.3, 30, 30);
+        }
+    </script>
+
+</body>
+</html>
