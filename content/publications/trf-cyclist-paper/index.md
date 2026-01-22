@@ -26,7 +26,10 @@ abstract:
 summary: Cooperative behaviors among road users, such as predicting and compensating for another road user’s mistakes, were investigated.
 
 tags:
-- Implicit communication
+- Traffic Safety and Efficiency
+- Implicit Communication
+- Quasi-Experiment
+  
 featured: true
 
 links:
@@ -36,7 +39,7 @@ links:
 # Featured image
 # To use, add an image named `featured.jpg/png` to your page's folder. 
 image:
-  caption: 'Image credit: [**unsplash**](https://unsplash.com/photos/jdD8gXaTZsc)'
+  caption: 'AI generated'
   focal_point: ""
   preview_only: false
 
@@ -70,8 +73,8 @@ Using stationary cameras, a 12-day naturalistic traffic observation was conducte
 
 - Ego's turning direction (left vs. right)
 - Foe's type (car vs. bike)
-- Foe's lateral position
 - Relative arrival time
+- Foe's lateral position
 
 ![classes](figure1.png)
 
@@ -80,9 +83,11 @@ Using stationary cameras, a 12-day naturalistic traffic observation was conducte
 ### Key Findings
 - Cyclists violated the “priority-to-the-right” rule more frequently than motorists.  
 - Road users with priority were more likely to yield when:
-  - turning right,  
-  - arriving later at the intersection, or  
-  - facing an opposing road user **close to the lane center**.  
+  - turning right
+  - facing a bike
+  - arriving later at the intersection
+  - facing a road user **close to the lane center**
+
 
 ---
 
