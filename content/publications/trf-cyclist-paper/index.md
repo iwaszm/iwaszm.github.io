@@ -68,10 +68,10 @@ Do cyclists disregard traffic rules more often than motorists? Answering this is
 ### Methods
 Using stationary cameras, a 12-day naturalistic traffic observation was conducted at an urban T-intersection in _Braunschweig, Germany_. The video footage underwent spatial calibration to establish a real-world coordinate system. Road users were detected and classified, and their movements were converted into georeferenced trajectories. In 202 interaction cases, a car from the right (Ego, with priority) encountered a car or a bike from the left (Foe, without priority). The study examined how the following factors influenced the **passing order** using logistic regression:
 
-- Ego's turning direction (left vs. right);
-- Foe's vehicle type (car vs. bicycle);
-- Foe's lateral position;
-- Relative arrival time."
+- Ego's turning direction (left vs. right)
+- Foe's type (car vs. bike)
+- Foe's lateral position
+- Relative arrival time
 
 ![classes](figure1.png)
 
