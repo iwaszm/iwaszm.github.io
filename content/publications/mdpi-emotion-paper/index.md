@@ -1,16 +1,14 @@
 ---
-title: "The Novelty Appraisal of the Feeling of Risk in Vehicles"
+title: "Bringing Emotion Theory into the Cockpit"
 authors:
 - admin
-- Meike Jipp
-- Klas Ihme
 author_notes:
 - ""
 - ""
-date: "2022-11-01T00:00:00Z"
+date: "2023-11-19T00:00:00Z"
 
 # Schedule page publish date (NOT publication's date).
-publishDate: "2022-11-01T00:00:00Z"
+publishDate: "2023-11-19T00:00:00Z"
 
 # Publication type.
 # Accepts a single type but formatted as a YAML list (for Hugo requirements).
@@ -18,9 +16,6 @@ publishDate: "2022-11-01T00:00:00Z"
 publication_types: ["article-journal"]
 
 # Publication name and optional abbreviated publication name.
-publication: "International Journal of Environmental Research and Public Health"
-publication_short: "IJERPH"
-
 
 abstract: 
 
@@ -59,29 +54,72 @@ slides: ""
 
 <div class="text-base text-justify">
 
-Nowadays, **vehicle assistance systems** may assess the risks of the traffic situation with the help of advanced sensor technology and optimized algorithms.  
-However, the **passengers’ feelings of risk** in the vehicle have been mostly neglected.
-
 ---
 
-According to the *Component Process Model of emotions*, during the feeling of risk, **novelty** is one of the relevant event appraisals leading to particular **physiological and facial responses**.
+### Background
 
-To identify whether indicators for **novelty appraisal** may be used for detecting the **feeling of risk of vehicle occupants**, we investigated **physiological responses** and **facial expressions** of individuals experiencing the feeling of risk with different levels of novelty.
+For nearly a century, the scientific debate on emotion has revolved around two fascinating puzzles. First, the nature of emotion: Are joy and sadness distinct entities, like apples and pears, or merely different shades of the same fruit, like red and green apples? Second, the sequence: Do we run because we feel fear, or do we feel fear because we are running? While the academic community has yet to reach a verdict on these theoretical roots, there is one consensus: to truly understand human emotion, we cannot rely on a single source. It requires multimodal measurement, combining physiological signals, facial expressions, and behavioral data.
 
+This principle is now reshaping the automotive world. From enhancing the **passenger's well-being** to solving the complex puzzle of **trust in autonomous vehicles**, accurate emotion detection is key. Motivated by this, I had the privilege during the early stages of my PhD to independently design and execute a comprehensive multimodal driving simulator experiment, aiming to bridge the gap between abstract theory and real-world application
+
+
+<figure class="w-full my-6 flex flex-col items-center"> 
+  <img src="workflow.svg" alt="Research Framework Diagram">
+  
+  <figcaption class="figure-caption">
+    <strong>Figure 1. The Research Workflow.</strong><br>
+    The workflow illustrates the end-to-end process from experimental design and multimodal data acquisition to data fusion and final publication.
+  </figcaption>
+</figure>
+
+
+---
+### Hypotheses
+Drawing upon the *Component Process Model (CPM)*, the driver's physiological state and facial expressions during fear-inducing scenarios would be modulated by specific cognitive appraisals: Novelty and Power. It's hypothesized that these cognitive checks manifest through distinct channels:
+
+1. The Novelty Hypothesis: The appraisal of Novelty (high unexpectedness) will be indicated by immediate responses, specifically an increase in Pupil Diameter, Skin Conductance Level, and the activation of Upper Face Action Units.
+2. The Power Hypothesis: The appraisal of Power (low coping potential/control) will be indicated by a delayed response pattern, specifically an drop in nasal temperature and the activation of Lower Face Action Units.
+3. The Temporal Dynamics Hypothesis: In line with the sequential nature of CPM checks, the facical indicators of Novelty are hypothesized to precede the ones of Power, reflecting the cognitive processing order from event detection to coping evaluation.
+
+---
+### Methods
+Driving simulator experiments were conducted using Virtual Reality to elicit fear through critical traffic events. Adopting a mixed-methods design, the study integrated objective physiological measurements with subjective assessments. The objective data comprised facial infrared thermography, facial Action Units (AUs), and synchronized peripheral physiological signals to capture somatic and expressive markers of 'Novelty' and 'Power'. These objective metrics were triangulated with subjective data collected via the Self-Assessment Manikin (SAM) and the Positive and Negative Affect Schedule (PANAS). This comprehensive approach allowed for the cross-validation of appraisal-driven responses, establishing a robust, multidimensional framework for assessing driver emotions.
+
+<figure class="figure-container">
+  <img src="figure1.png" alt="Research Framework Diagram">
+  
+  <figcaption class="figure-caption">
+    <strong>Figure 2. Overview of the multi-sensor experimental setup.</strong><br>
+    The diagram shows the integration of physiological, behavioral, and subjective measurement tools within the simulated driving environment.
+  </figcaption>
+</figure>
+
+<figure class="w-full my-6 flex flex-col items-center"> 
+    <iframe src="AU.html"
+            class="w-full h-[520px] rounded-xl border border-gray-200 shadow-sm bg-white"
+            loading="lazy" 
+            allowfullscreen>
+    </iframe>
+    <figcaption class="mt-3 text-sm text-gray-500 text-center font-serif italic">
+        <strong>Figure 3.</strong> Mapping of Facial Action Units (AUs) to basic emotion categories.
+    </figcaption>
+</figure>
+        
 ---
 
 ### Key Findings
-This secondary analysis of an earlier simulator study revealed that:
-
-- **Pupil diameter amplitude**  
-- **Skin conductance level (SCL) changes**  
-- **Facial expression activity** (inner and outer brow raiser, brow lowerer, upper lid raiser, and lid tightener)  
-
-were **correlated with the reduction in novelty**, suggesting that these indicators could reflect the *novelty appraisal* of the feeling of risk in vehicle occupants.
+1. The studies empirically validated the Component Process Model (CPM) as a robust framework for assessing driver emotions. 
+2. Thermal Imaging as an indicator for "Power" 
+   - Fear (characterized by low power or low coping potential) was significantly associated with a decrease in nasal tip temperature (vasoconstriction), effectively distinguishing it from high-power emotions.
+3. Distinct Facial Signatures for Appraisals
+   - Novelty: Associated with upper face activation (AUs 1, 2, 4, 5, 7).
+   - Power: Associated with lower face activation (AUs 15, 20, 25, 26).
+   - Temporal Dynamics: Indicators of Novelty precede those of Power, reflecting the cognitive processing order from event detection to coping evaluation.
+4. Multimodal Synchronization & Latency
+   - A decrease in Novelty (habituation) significantly correlated with reductions in Pupil Diameter (PD), Skin Conductance Level (SCL), and AU intensity.
+   - Response Latency: Revealed distinct peak timings for different modalities, with Pupil Diameter peaking earliest (~3.2s), followed by Skin Conductance (~4.1s) and Facial Expressions (~4.3s), and finally Heart Rate (~5.0s).
 
 ---
 
-Hence, this research provides **evidence for the novelty appraisal** of the feeling of risk.  
-Furthermore, it informs research on **affect-aware systems**, which aim to identify and reduce passengers’ feelings of risk - ultimately helping to **maintain trust in automated vehicles**.
 
 </div>

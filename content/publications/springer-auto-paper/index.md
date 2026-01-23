@@ -1,10 +1,7 @@
 ---
 title: "Human Performance in Critical Scenarios as a Benchmark for Highly Automated Vehicles"
 authors:
-- Laura Quante
 - admin
-- Katharina Preuk
-- Caroline Schießl 
 author_notes:
 - ""
 - ""
