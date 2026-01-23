@@ -67,15 +67,14 @@ This principle is now reshaping the automotive world. From enhancing the **passe
   <img src="workflow.svg" alt="Research Framework Diagram">
   
   <figcaption class="figure-caption">
-    <strong>Figure 1. The Research Workflow.</strong><br>
-    The workflow illustrates the end-to-end process from experimental design and multimodal data acquisition to data fusion and final publication.
+    <strong>Figure 1. The Research Workflow.</strong>
   </figcaption>
 </figure>
 
 
 ---
 ### Hypotheses
-Drawing upon the *Component Process Model (CPM)*, the driver's physiological state and facial expressions during fear-inducing scenarios would be modulated by specific cognitive appraisals: Novelty and Power. It's hypothesized that these cognitive checks manifest through distinct channels:
+Drawing upon the *Component Process Model (CPM)*, the driver's body responses during fear-inducing scenarios would be modulated by specific cognitive appraisals: Novelty and Power. It's hypothesized that these cognitive checks manifest through distinct channels:
 
 1. The Novelty Hypothesis: The appraisal of Novelty (high unexpectedness) will be indicated by immediate responses, specifically an increase in Pupil Diameter, Skin Conductance Level, and the activation of Upper Face Action Units.
 2. The Power Hypothesis: The appraisal of Power (low coping potential/control) will be indicated by a delayed response pattern, specifically an drop in nasal temperature and the activation of Lower Face Action Units.
@@ -83,7 +82,7 @@ Drawing upon the *Component Process Model (CPM)*, the driver's physiological sta
 
 ---
 ### Methods
-Driving simulator experiments were conducted using Virtual Reality to elicit fear through critical traffic events. Adopting a mixed-methods design, the study integrated objective physiological measurements with subjective assessments. The objective data comprised facial infrared thermography, facial Action Units (AUs), and synchronized peripheral physiological signals to capture somatic and expressive markers of 'Novelty' and 'Power'. These objective metrics were triangulated with subjective data collected via the Self-Assessment Manikin (SAM) and the Positive and Negative Affect Schedule (PANAS). This comprehensive approach allowed for the cross-validation of appraisal-driven responses, establishing a robust, multidimensional framework for assessing driver emotions.
+Driving simulator experiments were conducted using Virtual Reality to elicit fear through critical traffic events. Adopting a mixed-methods design, the study integrated objective physiological measurements with subjective assessments. The objective data comprised facial infrared thermography, facial Action Units (AUs), and synchronized peripheral physiological signals. These objective metrics were valided with subjective data collected via the Self-Assessment Manikin (SAM) and the Positive and Negative Affect Schedule (PANAS). This comprehensive approach allowed for the cross-validation of appraisal-driven responses, establishing a robust, multidimensional framework for assessing driver emotions.
 
 <figure class="figure-container">
   <img src="figure1.png" alt="Research Framework Diagram">
