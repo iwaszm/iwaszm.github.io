@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Simulation: Compliance vs Violation</title>
+    <style>
+        /* Import a nice font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #f5f5f7; /* Apple-like light grey */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #333;
+        }
+
+        /* Top Info Card - Glassmorphism */
+        #overlay {
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #info-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 16px 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        #status-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+        }
+
+        .legend {
+            font-size: 12px;
+            color: #86868b;
+            font-weight: 400;
+        }
+
+        /* Bottom Controls - Floating Pill Design */
+        #controls {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 6px;
+            border-radius: 100px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            gap: 0; /* Removing gap for segmented control look */
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            background: transparent;
+            transition: all 0.3s ease;
+            outline: none;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            color: #333;
+        }
+
+        /* Active States */
+        button.active-compliance {
+            background-color: #34C759; /* iOS Green */
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+        }
+
+        button.active-violation {
+            background-color: #FF3B30; /* iOS Red */
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+        }
+
+        /* Smooth text color transition for status */
+        .status-compliance { color: #248A3D !important; }
+        .status-violation { color: #D70015 !important; }
+
+    </style>
+    <!-- Import Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <div id="overlay">
+        <div id="info-card">
+            <div id="status-text">Select a scenario</div>
+            <div class="legend"> Car (ego, with priority) • Bike (foe, without priority)</div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <button id="btnCompliance" class="active-compliance">Compliance</button>
+        <button id="btnViolation">Violation</button>
+    </div>
+
+    <script>
+        // --- 1. Scene Initialization ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf5f5f7); // Match body background
+
+        // Configure Orthographic Camera for Isometric View
+        const aspect = window.innerWidth / window.innerHeight;
+        const d = 35; // View frustum size
+        const camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
+        
+        // Isometric Angle
+        camera.position.set(40, 40, 40); 
+        camera.lookAt(scene.position); 
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // Alpha true for better blending
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        // --- 2. Lighting ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        dirLight.position.set(50, 80, 30);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        const dLight = 50;
+        dirLight.shadow.camera.left = -dLight;
+        dirLight.shadow.camera.right = dLight;
+        dirLight.shadow.camera.top = dLight;
+        dirLight.shadow.camera.bottom = -dLight;
+        scene.add(dirLight);
+
+        // --- 3. Environment Generation (Roads) ---
+        function createRoad() {
+            const roadGroup = new THREE.Group();
+
+            // Materials - slightly more neutral tones
+            const asphaltMat = new THREE.MeshPhongMaterial({ color: 0x5e5e5e }); 
+            const sidewalkMat = new THREE.MeshPhongMaterial({ color: 0xc7c7cc });
+            const lineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+            // 3.1 Main Road (East-West)
+            const mainRoadGeo = new THREE.BoxGeometry(100, 1, 20);
+            const mainRoad = new THREE.Mesh(mainRoadGeo, asphaltMat);
+            mainRoad.position.y = -0.5;
+            mainRoad.receiveShadow = true;
+            roadGroup.add(mainRoad);
+
+            // 3.2 Branch Road (South)
+            const branchRoadGeo = new THREE.BoxGeometry(20, 1, 40);
+            const branchRoad = new THREE.Mesh(branchRoadGeo, asphaltMat);
+            branchRoad.position.set(0, -0.5, 30);
+            branchRoad.receiveShadow = true;
+            roadGroup.add(branchRoad);
+
+            // 3.3 Sidewalks / Curbs
+            // North Curb
+            const curbN = new THREE.Mesh(new THREE.BoxGeometry(100, 1.2, 4), sidewalkMat);
+            curbN.position.set(0, -0.4, -12);
+            curbN.receiveShadow = true;
+            roadGroup.add(curbN);
+            
+            // South Curbs
+            const curbS1 = new THREE.Mesh(new THREE.BoxGeometry(40, 1.2, 4), sidewalkMat);
+            curbS1.position.set(-30, -0.4, 12); 
+            roadGroup.add(curbS1);
+
+            const curbS2 = new THREE.Mesh(new THREE.BoxGeometry(40, 1.2, 4), sidewalkMat);
+            curbS2.position.set(30, -0.4, 12); 
+            roadGroup.add(curbS2);
+
+            // Branch Road Curbs
+            const curbB1 = new THREE.Mesh(new THREE.BoxGeometry(4, 1.2, 40), sidewalkMat);
+            curbB1.position.set(-12, -0.4, 30);
+            roadGroup.add(curbB1);
+            
+            const curbB2 = new THREE.Mesh(new THREE.BoxGeometry(4, 1.2, 40), sidewalkMat);
+            curbB2.position.set(12, -0.4, 30);
+            roadGroup.add(curbB2);
+
+            // 3.4 Road Markings
+            for(let i=-4; i<4; i++) {
+                if(i===0) continue;
+                const line = new THREE.Mesh(new THREE.BoxGeometry(8, 0.1, 0.5), lineMat);
+                line.position.set(i * 12, 0.02, 0);
+                roadGroup.add(line);
+            }
+            for(let i=0; i<2; i++) {
+                 const line = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 8), lineMat);
+                 line.position.set(0, 0.02, 20 + i*15);
+                 roadGroup.add(line);
+            }
+
+            scene.add(roadGroup);
+        }
+        createRoad();
+
+        // --- 4. Models ---
+        function createCar(color) {
+            const carGroup = new THREE.Group();
+
+            // Chassis - slightly sleeker
+            const bodyGeo = new THREE.BoxGeometry(4.5, 2.2, 8);
+            const bodyMat = new THREE.MeshPhongMaterial({ color: color, shininess: 80 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.position.y = 1.1;
+            body.castShadow = true;
+            body.receiveShadow = true;
+            carGroup.add(body);
+
+            // Cabin
+            const cabinGeo = new THREE.BoxGeometry(3.6, 1.4, 4.5);
+            const cabinMat = new THREE.MeshPhongMaterial({ color: 0x222222, shininess: 100 });
+            const cabin = new THREE.Mesh(cabinGeo, cabinMat);
+            cabin.position.set(0, 2.4, 0.5);
+            carGroup.add(cabin);
+
+            // Wheels
+            const wheelGeo = new THREE.CylinderGeometry(0.8, 0.8, 0.6, 24);
+            const wheelMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
+            
+            const positions = [
+                [-2.3, 0.8, 2.5], [2.3, 0.8, 2.5],
+                [-2.3, 0.8, -2.5], [2.3, 0.8, -2.5]
+            ];
+
+            positions.forEach(pos => {
+                const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                wheel.rotation.z = Math.PI / 2;
+                wheel.position.set(...pos);
+                carGroup.add(wheel);
+            });
+
+            return carGroup;
+        }
+
+        function createCyclist() {
+            const bikeGroup = new THREE.Group();
+            
+            const bikeMat = new THREE.MeshPhongMaterial({ color: 0xFF3B30 }); // Red
+            const skinMat = new THREE.MeshPhongMaterial({ color: 0xFFCCAA });
+
+            // Frame
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.5, 3), new THREE.MeshPhongMaterial({color: 0x333333}));
+            frame.position.y = 1.5;
+            bikeGroup.add(frame);
+
+            // Torso
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.8, 1), bikeMat);
+            body.position.set(0, 3, 0);
+            bikeGroup.add(body);
+
+            // Head
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.7), skinMat);
+            head.position.set(0, 4.3, 0);
+            bikeGroup.add(head);
+
+            bikeGroup.castShadow = true;
+            return bikeGroup;
+        }
+
+        // Add Actors
+        // Use a nicer blue for the car: iOS System Blue
+        const blueCar = createCar(0x007AFF); 
+        scene.add(blueCar);
+
+        const cyclist = createCyclist();
+        scene.add(cyclist);
+
+        // --- 5. Paths & Trajectories ---
+        const carPath = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(5, 0, 50),
+            new THREE.Vector3(5, 0, 15),
+            new THREE.Vector3(2, 0, 2),
+            new THREE.Vector3(-15, 0, -5),
+            new THREE.Vector3(-60, 0, -5)
+        ]);
+
+        const cyclistPath = new THREE.LineCurve3(
+            new THREE.Vector3(-60, 0, 6), 
+            new THREE.Vector3(60, 0, 6)
+        );
+
+        // --- 6. Animation Logic ---
+        
+        let animationMode = 'compliance'; 
+        let isPlaying = false;
+        let startTime = 0;
+        const duration = 5000; 
+
+        // UI References
+        const statusText = document.getElementById('status-text');
+        const btnCompliance = document.getElementById('btnCompliance');
+        const btnViolation = document.getElementById('btnViolation');
+
+        // Button Handlers
+        btnCompliance.onclick = () => {
+            startAnimation('compliance');
+            updateUI('compliance');
+        };
+        btnViolation.onclick = () => {
+            startAnimation('violation');
+            updateUI('violation');
+        };
+
+        function updateUI(mode) {
+            // Reset classes
+            btnCompliance.className = '';
+            btnViolation.className = '';
+            statusText.className = '';
+
+            if (mode === 'compliance') {
+                btnCompliance.classList.add('active-compliance');
+                statusText.innerText = "Compliance: Bike yields, Car proceeds";
+                statusText.classList.add('status-compliance');
+            } else {
+                btnViolation.classList.add('active-violation');
+                statusText.innerText = "Violation: Bike proceeds, Car yields";
+                statusText.classList.add('status-violation');
+            }
+        }
+
+        function startAnimation(mode) {
+            animationMode = mode;
+            isPlaying = true;
+            startTime = Date.now();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (!isPlaying) return;
+
+            const now = Date.now();
+            const elapsed = now - startTime;
+            let t = (elapsed % duration) / duration;
+
+            let carT = 0;
+            let bikeT = 0;
+
+            if (animationMode === 'compliance') {
+                // Car moves normally
+                carT = Math.min(t * 1.6, 1.0); 
+
+                // Cyclist Slow Down Logic
+                const slowStartT = 0.25;
+                const slowEndT = 0.65;
+                const distAtSlowStart = 0.3; 
+                const distAtSlowEnd = 0.45; 
+
+                if (t < slowStartT) {
+                    bikeT = (t / slowStartT) * distAtSlowStart;
+                } else if (t < slowEndT) {
+                    const phaseProgress = (t - slowStartT) / (slowEndT - slowStartT);
+                    bikeT = distAtSlowStart + phaseProgress * (distAtSlowEnd - distAtSlowStart);
+                } else {
+                    const phaseProgress = (t - slowEndT) / (1.0 - slowEndT);
+                    bikeT = distAtSlowEnd + phaseProgress * (1.0 - distAtSlowEnd);
+                }
+
+            } else {
+                // Violation Logic
+                bikeT = Math.min(t * 1.8, 1.0); 
+                const yieldPoint = 0.25; 
+
+                if (t < 0.2) {
+                    carT = (t / 0.2) * yieldPoint;
+                } else if (t < 0.45) {
+                    carT = yieldPoint;
+                } else {
+                    const flow = (t - 0.45) / 0.55;
+                    carT = yieldPoint + flow * (1.0 - yieldPoint);
+                }
+            }
+
+            // Update Car
+            if (carT >= 0.99) {
+                blueCar.visible = false;
+            } else {
+                blueCar.visible = true;
+                const carPos = carPath.getPointAt(carT);
+                blueCar.position.copy(carPos);
+                const carTangent = carPath.getTangentAt(Math.min(carT + 0.01, 1)).normalize();
+                const carLookAt = carPos.clone().add(carTangent);
+                blueCar.lookAt(carLookAt);
+            }
+
+            // Update Cyclist
+            if (bikeT >= 0.99) {
+                cyclist.visible = false;
+            } else {
+                cyclist.visible = true;
+                const bikePos = cyclistPath.getPointAt(bikeT);
+                cyclist.position.copy(bikePos);
+                cyclist.lookAt(new THREE.Vector3(60, 0, 6)); 
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Initialize
+        startAnimation('compliance');
+        updateUI('compliance');
+        animate();
+
+        window.addEventListener('resize', () => {
+            const aspect = window.innerWidth / window.innerHeight;
+            camera.left = -d * aspect;
+            camera.right = d * aspect;
+            camera.top = d;
+            camera.bottom = -d;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>

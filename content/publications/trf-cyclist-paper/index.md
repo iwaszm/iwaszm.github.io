@@ -76,13 +76,15 @@ Using stationary cameras, a 12-day naturalistic traffic observation was conducte
 - Relative arrival time
 - Foe's lateral position
 
-
 <figure class="w-full my-6 flex flex-col items-center"> 
-  <img src="figure1.png">
-  
-  <figcaption class="figure-caption">
-    <strong>Figure 2. Traffic Scenarios: Compliance vs Violation</strong>
-  </figcaption>
+    <iframe src="traffic_demo1.html"
+            class="w-full h-[520px] rounded-xl border border-gray-200 shadow-sm bg-white"
+            loading="lazy" 
+            allowfullscreen>
+    </iframe>
+    <figcaption class="figure-caption">
+        <strong>Figure 2.</strong> Traffic Scenarios: Compliance vs Violation.
+    </figcaption>
 </figure>
 
 
