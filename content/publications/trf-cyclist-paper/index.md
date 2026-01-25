@@ -58,19 +58,33 @@ slides: ""
 ### Background
 Do cyclists disregard traffic rules more often than motorists? Answering this is essential for optimizing traffic **safety and efficiency** as we transition toward autonomous driving in mixed environments. Grounded in naturalistic observations at urban unsignalized intersections, our study utilizes **quasi-experimental methods** and **regression analysis** to quantify compliance behaviors. This research is the result of a seamless collaboration between project managers, sensor technicians, data engineers, and human factors researchers, aiming to provide the critical behavioral data needed for safe human-machine coexistence.
 
-![workflow](workflow.svg)
+<figure class="w-full my-6 flex flex-col items-center"> 
+  <img src="workflow.svg">
+  
+  <figcaption class="figure-caption">
+    <strong>Figure 1. The Collaborative Project Workflow.</strong>
+  </figcaption>
+</figure>
 
 ---
 
 ### Methods
-Using stationary cameras, a 12-day naturalistic traffic observation was conducted at an urban T-intersection in _Braunschweig, Germany_. The video footage underwent spatial calibration to establish a real-world coordinate system. Road users were detected and classified, and their movements were converted into georeferenced trajectories. In 202 interaction cases, a car from the right (Ego, with priority) encountered a car or a bike from the left (Foe, without priority). The study examined how the following factors influenced the **passing order** using logistic regression:
+Using stationary cameras, a 12-day naturalistic traffic observation was conducted at an urban T-intersection in _Braunschweig, Germany_. The video footage underwent spatial calibration to establish a real-world coordinate system. Road users were detected and classified, and their movements were converted into georeferenced trajectories. In **202** interaction cases, a car from the right (Ego, with priority) encountered a car or a bike from the left (Foe, without priority). The study examined how the following factors associated with the **violation** using logistic regression:
 
 - Ego's turning direction (left vs. right)
 - Foe's type (car vs. bike)
 - Relative arrival time
 - Foe's lateral position
 
-![classes](figure1.png)
+
+<figure class="w-full my-6 flex flex-col items-center"> 
+  <img src="figure1.png">
+  
+  <figcaption class="figure-caption">
+    <strong>Figure 2. Traffic Scenarios: Compliance vs Violation</strong>
+  </figcaption>
+</figure>
+
 
 ---
 

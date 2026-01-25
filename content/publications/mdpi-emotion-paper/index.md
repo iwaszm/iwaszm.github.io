@@ -85,7 +85,7 @@ Drawing upon the *Component Process Model (CPM)*, the driver's body responses du
 Driving simulator experiments were conducted using Virtual Reality to elicit fear through critical traffic events. Adopting a mixed-methods design, the study integrated objective physiological measurements with subjective assessments. The objective data comprised facial infrared thermography, facial Action Units (AUs), and synchronized peripheral physiological signals. These objective metrics were valided with subjective data collected via the Self-Assessment Manikin (SAM) and the Positive and Negative Affect Schedule (PANAS). This comprehensive approach allowed for the cross-validation of appraisal-driven responses, establishing a robust, multidimensional framework for assessing driver emotions.
 
 <figure class="figure-container">
-  <img src="figure1.png">
+  <img src="Figure2.png">
   
   <figcaption class="figure-caption">
     <strong>Figure 2. Overview of the multi-sensor experimental setup.</strong><br>
