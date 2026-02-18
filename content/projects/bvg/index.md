@@ -15,7 +15,7 @@ image:
 
 ---
 
-<iframe src="BVGTracker.html"
+<iframe src="index.html"
         class="w-full h-[520px] my-6 rounded-xl border border-gray-200 shadow-sm"
         loading="lazy" allowfullscreen></iframe>
 
