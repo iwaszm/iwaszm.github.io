@@ -7,7 +7,7 @@
 appearance:
   mode: system
   color: indigo
-  font: native
+  font: sans
 
 # SEO
 marketing:
@@ -59,4 +59,3 @@ features:
     enable: false
   privacy_pack:
     enable: false
-

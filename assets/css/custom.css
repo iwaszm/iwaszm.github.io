@@ -1,0 +1,24 @@
+/* 1. 引入 Inter 字体 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+/* 2. 覆盖 Tailwind 和 Hugo Blox 的默认字体变量 */
+:root {
+  /* 设置无衬线字体 (Sans) 为 Inter */
+  --font-sans: "Inter", sans-serif;
+  
+  /* 为了保险，同时覆盖可能用到的标题和正文变量 */
+  --font-body: "Inter", sans-serif;
+  --font-heading: "Inter", sans-serif;
+}
+
+/* 3. 强制应用字体 (作为兜底方案) */
+body, h1, h2, h3, h4, h5, h6, .prose {
+  font-family: "Inter", sans-serif !important;
+}
+
+/* x. 滚动高亮效果的基础样式 */
+.scroll-reveal {
+  transition: opacity 0.1s linear, font-weight 0.1s linear; /* 线性过渡，跟随滚轮 */
+  will-change: opacity, font-weight; /* 性能优化 */
+  opacity: 0.1; /* 默认状态：几乎不可见 */
+}

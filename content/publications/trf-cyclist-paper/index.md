@@ -52,10 +52,11 @@ projects: []
 slides: ""
 ---
 
-<div class="text-base text-justify">
+<div class="text-base text-justify"> 
 ---
 
 ### Background
+
 Do cyclists disregard traffic rules more often than motorists? Answering this is essential for optimizing traffic **safety and efficiency** as we transition toward autonomous driving in mixed environments. Grounded in naturalistic observations at urban unsignalized intersections, our study utilizes **quasi-experimental methods** and **regression analysis** to quantify compliance behaviors. This research is the result of a seamless collaboration between project managers, sensor technicians, data engineers, and human factors researchers, aiming to provide the critical behavioral data needed for safe human-machine coexistence.
 
 <figure class="w-full my-6 flex flex-col items-center"> 
