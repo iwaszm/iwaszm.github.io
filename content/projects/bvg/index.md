@@ -15,7 +15,7 @@ image:
 
 ---
 
-<iframe src="index.html"
+<iframe src="bvgtracker.html"
         class="w-full h-[520px] my-6 rounded-xl border border-gray-200 shadow-sm"
         loading="lazy" allowfullscreen></iframe>
 
@@ -32,37 +32,11 @@ vehicle positions every few seconds.
 
 ---
 
-### ✨ Features
-
-- ⚡ Live bus position tracking  
-- 🎯 Customizable geographic radius (default: 3 km)  
-- 🚌 Supports multiple bus lines (e.g., 142 & 123)  
-- ➡️ Direction arrows that rotate to indicate vehicle movement  
-- 🎨 Color-coded arrows based on destination (e.g., red vs. green)  
-- 📍 Fixed reference markers (e.g., blue point)  
-- 📱 Fully responsive layout for both phones and desktops  
-- ℹ️ Vehicle popup shows:
-  - Direction
-  - Next stop (`nextStopovers[2]`)
-  - Planned arrival time
-  - Delay information
-
----
-
-### 🛠 Technology Stack
-
-- **Leaflet.js** for map visualization  
-- **OpenStreetMap** tiles  
-- **transport.rest (BVG/VBB)** real-time `radar` endpoint  
-- Vanilla **HTML + JavaScript**  
-- No backend required
-
----
-
 ### 🔗 Data Source
 
 Powered by **transport.rest**  
 API documentation: https://v6.transport.rest/
+Git Repo: https://github.com/iwaszm/BerlinStationMonitor
 
 ---
 
