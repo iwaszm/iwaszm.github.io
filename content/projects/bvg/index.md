@@ -1,5 +1,5 @@
 ---
-title: BVG-Bus Tracker
+title: Berlin Transit Live Monitor
 date: 2025-11-13
 toc: true
 type: "project"
@@ -9,7 +9,7 @@ tags:
 summary: ""
 
 image:
-  caption: 'Image credit: [**unsplash**](https://unsplash.com/de/fotos/eingeschalteter-schwarz-grauer-laptop-computer-mcSDtbWXUZU)'
+  caption: 'Image credit: [**unsplash**](https://unsplash.com/de/fotos/linie-ziel-abfahrt-in-akg9Y9OoqAw)'
   focal_point: ""
   preview_only: false
 
@@ -21,11 +21,8 @@ image:
 
 <div class="text-base text-justify leading-relaxed max-w-prose mx-auto">
 
-## Real-time Bus Tracking Map (Leaflet + BVG API)
 
-This project is a lightweight, mobile-friendly web page that displays
-real-time locations of selected bus lines using the **BVG / VBB transport.rest API**
-and **Leaflet** maps.
+A modern, responsive web dashboard designed for real-time monitoring of public transport departures in Berlin. This tool provides a comprehensive view of transit movements, combining temporal schedules with spatial tracking.
 
 The page works on both desktop and mobile browsers and automatically updates
 vehicle positions every few seconds.
@@ -37,14 +34,6 @@ vehicle positions every few seconds.
 Powered by **transport.rest**  
 API documentation: https://v6.transport.rest/
 Git Repo: https://github.com/iwaszm/BerlinStationMonitor
-
----
-
-### 📄 Notes
-
-- Some mobile browsers block remote script loading from `file://`  
-  → Use GitHub Pages or any HTTP server to view the map properly.  
-- The bus lines and radius can be easily changed in the JavaScript section.
 
 ---
 
