@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        /* --- CSS STYLING --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #eef1f5; 
+            font-family: 'Inter', sans-serif;
+            color: #1d1d1f;
+        }
+
+        /* --- DARK FLOATING PLAYER CONTROLS (Top Left) --- */
+        #player-controls {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: rgba(20, 20, 20, 0.9); /* Black background */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 6px 8px;
+            border-radius: 40px; /* Pill shape */
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 200;
+            transition: transform 0.2s;
+        }
+
+        #player-controls:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+        }
+
+        /* DARK THEME BUTTONS */
+        .player-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #86868b; /* Default Gray Icon */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%;
+            transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+            padding: 0;
+            position: relative;
+        }
+
+        .player-btn:hover {
+            color: #d2d2d7; /* Lighter Gray on Hover */
+            background: rgba(255,255,255,0.1);
+        }
+
+        .player-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* ACTIVE STATE (Source/Lit effect) */
+        .player-btn.active, .player-btn.is-playing {
+            color: #ffffff; /* White Icon */
+            background: rgba(255,255,255,0.15); /* Subtle highlight bg */
+            text-shadow: 0 0 8px rgba(255,255,255,0.4); /* Glow effect */
+        }
+        
+        /* Specific adjustments for icons */
+        #play-btn { font-size: 16px; }
+        #loop-btn { font-size: 20px; font-weight: 300; } 
+        #reset-btn { font-size: 18px; }
+
+        /* --- SIDEBAR (Right) --- */
+        #sidebar {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(0,0,0,0.1);
+            padding: 16px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        h3 { margin: 0 0 6px 0; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #86868b; letter-spacing: 0.8px;}
+
+        /* Controls */
+        .control-group {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        label { display: block; font-size: 12px; margin-bottom: 4px; font-weight: 500; color: #333;}
+        
+        select, input[type="number"], input[type="text"], input[type="range"] {
+            width: 100%;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #d2d2d7;
+            font-family: inherit;
+            font-size: 12px;
+            margin-bottom: 8px;
+            background: #fbfbfb;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        /* Range Slider Styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 4px;
+            background: #e1e1e6;
+            border-radius: 2px;
+            outline: none;
+            padding: 0;
+            margin: 8px 0 12px 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #0071e3;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        select:focus, input:focus { outline: none; border-color: #0071e3; }
+
+        .row { display: flex; gap: 8px; }
+        .col { flex: 1; }
+
+        button.action-btn {
+            background: #0071e3;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button.action-btn:hover { background: #0077ed; transform: translateY(-1px); }
+        button.action-btn:active { transform: translateY(0); }
+        
+        button.secondary { background: #e8e8ed; color: #1d1d1f; box-shadow: none; }
+        button.secondary:hover { background: #d2d2d7; }
+
+        /* Actor List */
+        #actor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 60px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .actor-item {
+            background: #f9f9fa;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            border-left: 3px solid #86868b;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+        
+        .actor-item strong { display: block; margin-bottom: 2px; }
+        .actor-item span { color: #666; }
+
+        .actor-item .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.05);
+            color: #666;
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            font-size: 10px;
+            border-radius: 50%;
+            line-height: 16px;
+            text-align: center;
+            box-shadow: none;
+            cursor: pointer;
+            border: none;
+            display: block;
+        }
+        .actor-item .remove-btn:hover { color: white; background: #ff3b30; }
+
+        /* Modal/Toast */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            z-index: 300;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Player Controls (Dark Mode) -->
+    <div id="player-controls">
+        <button class="player-btn" id="reset-btn" onclick="resetSimulation()" title="Reset">⏮</button>
+        <button class="player-btn" id="play-btn" onclick="togglePlay()" title="Play/Pause">▶</button>
+        <button class="player-btn" id="loop-btn" onclick="toggleLoop()" title="Loop Animation">∞</button>
+    </div>
+
+    <!-- Sidebar Configuration UI -->
+    <div id="sidebar">
+        
+        <!-- Scenario Presets & Save/Load -->
+        <div class="control-group">
+            <h3>Scenarios</h3>
+            <label>Load Preset</label>
+            <select id="scenarioSelect" onchange="loadScenario()">
+                <option value="empty">Empty Intersection</option>
+                <option value="left_turn_yield">Left Turn Yield</option>
+                <option value="pedestrian_crossing">Pedestrian Crossing</option>
+                <option value="traffic_jam">Busy Junction</option>
+            </select>
+            
+            <div class="row" style="margin-top:8px;">
+                <button class="action-btn secondary" onclick="saveCurrentScenario()">Save Scene</button>
+                <button class="action-btn secondary" onclick="shareScenario()">Share URL</button>
+            </div>
+        </div>
+
+        <!-- Actor Configuration -->
+        <div class="control-group">
+            <h3>Add Traffic</h3>
+            
+            <div class="row">
+                <div class="col">
+                    <label>Type</label>
+                    <select id="newActorType" onchange="updateSpeedDefault()">
+                        <option value="car">Car</option>
+                        <option value="cyclist">Cyclist</option>
+                        <option value="pedestrian">Pedestrian</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Color</label>
+                    <select id="newActorColor">
+                        <option value="blue">Blue</option>
+                        <option value="red">Red</option>
+                        <option value="white">White</option>
+                        <option value="black">Black</option>
+                        <option value="orange">Orange</option>
+                        <option value="green">Green</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label>Start</label>
+                    <select id="newActorStart">
+                        <option value="S">South</option>
+                        <option value="N">North</option>
+                        <option value="W">West</option>
+                        <option value="E">East</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>End</label>
+                    <select id="newActorEnd">
+                        <option value="N">North</option>
+                        <option value="S">South</option>
+                        <option value="E">East</option>
+                        <option value="W">West</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Speed Control -->
+            <label>Speed <span id="speedVal" style="float:right; color:#888; font-weight:400;">40 km/h</span></label>
+            <input type="range" id="newActorSpeed" min="5" max="80" value="40" step="5" oninput="document.getElementById('speedVal').innerText = this.value + ' km/h'">
+
+            <div class="row">
+                <div class="col">
+                    <label>Delay (s)</label>
+                    <input type="number" id="newActorDelay" value="0" min="0" step="0.5">
+                </div>
+                <div class="col">
+                    <label>&nbsp;</label>
+                    <button class="action-btn" onclick="addActorUI()">+ Add</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline List -->
+        <div class="control-group">
+            <h3>Traffic List</h3>
+            <div id="actor-list">
+                <div style="text-align:center; color:#999; padding:10px; font-size:11px;">No traffic added</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3D Scene Container -->
+    <div id="canvas-container"></div>
+    
+    <!-- Toast Message -->
+    <div id="toast">Message</div>
+
+    <script>
+        // --- CONSTANTS & CONFIG ---
+        const COLORS = {
+            asphalt: 0x3a3d42,  
+            white: 0xffffff,
+            yellow: 0xf5a623,
+            sidewalk: 0x99999f, 
+            
+            // Vehicles
+            blue: 0x007aff,
+            red: 0xff3b30,
+            green: 0x34c759,
+            orange: 0xff9500,
+            whiteCar: 0xf2f2f7,
+            black: 0x1c1c1e,
+            silver: 0xd0d0d5
+        };
+
+        const STATE = {
+            actors: [],
+            isPlaying: false,
+            loop: false,
+            time: 0,
+            maxDuration: 0,
+            savedScenarios: {}
+        };
+
+        // Road Dimensions
+        const ROAD_WIDTH = 20; 
+        const SIDEWALK_WIDTH = 6;
+        const STOP_LINE_DIST = (ROAD_WIDTH/2) + 8; // 18
+        
+        // VISUAL_ROAD_END defines where the grey mesh ends. 
+        // Arm Length is 50. Center is at 35. 35+25 = 60. 
+        const VISUAL_ROAD_END = 60; 
+
+        // --- THREE.JS SETUP ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xeef1f5);
+
+        const d = 50;
+        const aspect = (window.innerWidth - 280) / window.innerHeight;
+        const camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
+        camera.position.set(50, 50, 50);
+        camera.lookAt(scene.position);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth - 280, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        dirLight.position.set(30, 60, 20);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.camera.left = -60;
+        dirLight.shadow.camera.right = 60;
+        dirLight.shadow.camera.top = 60;
+        dirLight.shadow.camera.bottom = -60;
+        scene.add(dirLight);
+
+        const envGroup = new THREE.Group();
+        const actorGroup = new THREE.Group();
+        const helperGroup = new THREE.Group(); 
+        scene.add(envGroup);
+        scene.add(actorGroup);
+        scene.add(helperGroup);
+
+        // --- ENVIRONMENT BUILDER ---
+
+        function buildIntersection() {
+            while(envGroup.children.length > 0) envGroup.remove(envGroup.children[0]);
+
+            // 1. Intersection Center
+            const centerGeo = new THREE.PlaneGeometry(ROAD_WIDTH, ROAD_WIDTH);
+            const centerMat = new THREE.MeshLambertMaterial({ color: COLORS.asphalt });
+            const center = new THREE.Mesh(centerGeo, centerMat);
+            center.rotation.x = -Math.PI / 2;
+            center.receiveShadow = true;
+            envGroup.add(center);
+
+            // 2. Road Arms
+            const armLen = 50;
+            const armOffset = (ROAD_WIDTH/2) + (armLen/2); // 35
+
+            const addArm = (x, z, rot) => {
+                const rGeo = new THREE.PlaneGeometry(ROAD_WIDTH, armLen);
+                const rMat = new THREE.MeshLambertMaterial({ color: COLORS.asphalt });
+                const r = new THREE.Mesh(rGeo, rMat);
+                r.rotation.x = -Math.PI/2;
+                r.rotation.z = rot;
+                r.position.set(x, 0, z);
+                r.receiveShadow = true;
+                envGroup.add(r);
+
+                const swGeo = new THREE.BoxGeometry(SIDEWALK_WIDTH, 0.4, armLen);
+                const swMat = new THREE.MeshLambertMaterial({ color: COLORS.sidewalk });
+                const leftX = -(ROAD_WIDTH/2 + SIDEWALK_WIDTH/2);
+                const rightX = (ROAD_WIDTH/2 + SIDEWALK_WIDTH/2);
+                
+                const g = new THREE.Group();
+                const s1 = new THREE.Mesh(swGeo, swMat); s1.position.set(leftX, 0.2, 0);
+                const s2 = new THREE.Mesh(swGeo, swMat); s2.position.set(rightX, 0.2, 0);
+                g.add(s1, s2);
+                g.rotation.y = rot;
+                g.position.set(x, 0, z);
+                envGroup.add(g);
+
+                // Dashed Line
+                const dashLen = 5;
+                const dashGap = 5;
+                const startGlobal = STOP_LINE_DIST + 10; 
+                const endGlobal = VISUAL_ROAD_END; 
+                
+                const dashGroup = new THREE.Group();
+                for (let dZ = startGlobal; dZ < endGlobal; dZ += (dashLen + dashGap)) {
+                    const d = new THREE.Mesh(new THREE.PlaneGeometry(0.6, dashLen), new THREE.MeshBasicMaterial({color: COLORS.white}));
+                    d.rotation.x = -Math.PI/2;
+                    d.position.set(0, 0.02, armOffset - dZ); 
+                    dashGroup.add(d);
+                }
+                dashGroup.rotation.y = rot;
+                dashGroup.position.set(x, 0, z);
+                envGroup.add(dashGroup);
+            };
+
+            addArm(0, -armOffset, 0); 
+            addArm(0, armOffset, Math.PI);  
+            addArm(-armOffset, 0, Math.PI/2); 
+            addArm(armOffset, 0, -Math.PI/2);  
+
+            // 3. Markings
+            const zebraDist = (ROAD_WIDTH/2) + 2.5; 
+            
+            const addJunctionMarkings = (rot) => {
+                const g = new THREE.Group();
+                const stopLine = new THREE.Mesh(new THREE.PlaneGeometry(9, 1), new THREE.MeshBasicMaterial({color: COLORS.white}));
+                stopLine.rotation.x = -Math.PI/2;
+                stopLine.position.set(ROAD_WIDTH/4, 0.04, STOP_LINE_DIST);
+                g.add(stopLine);
+                // Zebra
+                for(let k=0; k<7; k++) {
+                    const stripe = new THREE.Mesh(new THREE.PlaneGeometry(ROAD_WIDTH/14, 6), new THREE.MeshBasicMaterial({color: COLORS.white}));
+                    stripe.rotation.x = -Math.PI/2;
+                    stripe.position.set(-ROAD_WIDTH/2 + 2 + k*2.6, 0.04, zebraDist);
+                    g.add(stripe);
+                }
+                g.rotation.y = rot;
+                envGroup.add(g);
+            };
+
+            addJunctionMarkings(0);          
+            addJunctionMarkings(Math.PI);    
+            addJunctionMarkings(Math.PI/2);  
+            addJunctionMarkings(-Math.PI/2); 
+
+            // 4. Poles
+            const addPole = (x, z, rot) => {
+                const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 6), new THREE.MeshLambertMaterial({color: 0x444444}));
+                pole.position.set(x, 3, z);
+                const box = new THREE.Mesh(new THREE.BoxGeometry(1.2, 3, 1), new THREE.MeshLambertMaterial({color: 0x222222}));
+                box.position.set(0, 2, 0);
+                box.rotation.y = rot;
+                pole.add(box);
+                const makeLight = (y, c) => {
+                    const l = new THREE.Mesh(new THREE.CircleGeometry(0.4, 16), new THREE.MeshBasicMaterial({color: c}));
+                    l.position.set(0, y, 0.51);
+                    return l;
+                };
+                box.add(makeLight(0.8, 0x330000));
+                box.add(makeLight(0, 0x332200));
+                box.add(makeLight(-0.8, 0x330000));
+                envGroup.add(pole);
+            };
+            const offset = ROAD_WIDTH/2 + 2;
+            const depth = STOP_LINE_DIST; 
+            addPole(offset, depth, 0);        
+            addPole(-offset, -depth, Math.PI);
+            addPole(depth, -offset, -Math.PI/2); 
+            addPole(-depth, offset, Math.PI/2);  
+        }
+
+        // --- PATH CALCULATION ---
+
+        function createPath(type, startDir, endDir) {
+            // Pedestrian
+            if (type === 'pedestrian') {
+                const zebraZ = (ROAD_WIDTH/2) + 2.5;
+                const sideX = (ROAD_WIDTH/2) + (SIDEWALK_WIDTH/2);
+                let pStart, pEnd;
+                if (startDir === 'N' && endDir === 'S') {
+                    pStart = new THREE.Vector3(-sideX, 0, -zebraZ);
+                    pEnd = new THREE.Vector3(-sideX, 0, zebraZ);
+                } else if (startDir === 'S' && endDir === 'N') {
+                    pStart = new THREE.Vector3(sideX, 0, zebraZ);
+                    pEnd = new THREE.Vector3(sideX, 0, -zebraZ);
+                } else if (startDir === 'W' && endDir === 'E') {
+                    pStart = new THREE.Vector3(-zebraZ, 0, sideX);
+                    pEnd = new THREE.Vector3(zebraZ, 0, sideX);
+                } else if (startDir === 'E' && endDir === 'W') {
+                    pStart = new THREE.Vector3(zebraZ, 0, -sideX);
+                    pEnd = new THREE.Vector3(-zebraZ, 0, -sideX);
+                }
+                if(pStart) pStart.y = 0.1;
+                if(pEnd) pEnd.y = 0.1;
+                return new THREE.LineCurve3(pStart, pEnd);
+            }
+
+            let offset = 5; 
+            if (type === 'cyclist') offset = 9; 
+
+            // Use VISUAL_ROAD_END (60)
+            const dist = VISUAL_ROAD_END; 
+            
+            const startPts = {
+                'N': new THREE.Vector3(-offset, 0, -dist),
+                'S': new THREE.Vector3(offset, 0, dist),
+                'W': new THREE.Vector3(-dist, 0, offset),
+                'E': new THREE.Vector3(dist, 0, -offset)
+            };
+
+            const endPts = {
+                'N': new THREE.Vector3(offset, 0, -dist),
+                'S': new THREE.Vector3(-offset, 0, dist),
+                'W': new THREE.Vector3(-dist, 0, -offset),
+                'E': new THREE.Vector3(dist, 0, offset)
+            };
+
+            const pStart = startPts[startDir].clone();
+            const pEnd = endPts[endDir].clone();
+            const points = [pStart];
+
+            const map = { 'N':0, 'E':1, 'S':2, 'W':3 };
+            const sIdx = map[startDir];
+            const eIdx = map[endDir];
+            const diff = (eIdx - sIdx + 4) % 4; 
+
+            if (diff === 2) { 
+                // STRAIGHT
+                points.push(pEnd);
+                return new THREE.LineCurve3(pStart, pEnd);
+            } 
+            else if (diff === 3) { 
+                // RIGHT TURN
+                let pApp = pStart.clone();
+                if(Math.abs(pStart.z) > Math.abs(pStart.x)) pApp.z = (pStart.z < 0 ? -15 : 15);
+                else pApp.x = (pStart.x < 0 ? -15 : 15);
+                
+                let pExit = pEnd.clone();
+                if(Math.abs(pEnd.z) > Math.abs(pEnd.x)) pExit.z = (pEnd.z < 0 ? -15 : 15);
+                else pExit.x = (pEnd.x < 0 ? -15 : 15);
+
+                const cp = new THREE.Vector3();
+                if (Math.abs(pStart.z) > Math.abs(pStart.x)) { 
+                     cp.x = pStart.x;
+                     cp.z = pEnd.z;
+                } else { 
+                     cp.x = pEnd.x;
+                     cp.z = pStart.z;
+                }
+
+                const path = new THREE.CurvePath();
+                path.add(new THREE.LineCurve3(pStart, pApp));
+                path.add(new THREE.QuadraticBezierCurve3(pApp, cp, pExit));
+                path.add(new THREE.LineCurve3(pExit, pEnd));
+                return path;
+            } 
+            else if (diff === 1) { 
+                // LEFT TURN
+                const innerDist = 6;
+                
+                let pEntry = pStart.clone();
+                if(Math.abs(pStart.z) > Math.abs(pStart.x)) pEntry.z = (pStart.z < 0 ? -innerDist : innerDist);
+                else pEntry.x = (pStart.x < 0 ? -innerDist : innerDist);
+
+                let pExitStart = pEnd.clone();
+                if(Math.abs(pEnd.z) > Math.abs(pEnd.x)) pExitStart.z = (pEnd.z < 0 ? -innerDist : innerDist);
+                else pExitStart.x = (pEnd.x < 0 ? -innerDist : innerDist);
+
+                const cp = new THREE.Vector3();
+                if(Math.abs(pStart.z) > Math.abs(pStart.x)) {
+                    cp.x = pStart.x;
+                    cp.z = pEnd.z; 
+                } else {
+                    cp.x = pEnd.x;
+                    cp.z = pStart.z;
+                }
+                
+                const path = new THREE.CurvePath();
+                path.add(new THREE.LineCurve3(pStart, pEntry));
+                path.add(new THREE.QuadraticBezierCurve3(pEntry, cp, pExitStart));
+                path.add(new THREE.LineCurve3(pExitStart, pEnd));
+                return path;
+            }
+
+            return new THREE.LineCurve3(pStart, pEnd);
+        }
+
+        // --- VISUALS ---
+
+        function createActorMesh(type, colorName) {
+            const group = new THREE.Group();
+            let cHex = COLORS[colorName];
+            if (colorName === 'white') cHex = COLORS.whiteCar;
+            const c = new THREE.Color(cHex);
+
+            if (type === 'car') {
+                const body = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.4, 4.2), new THREE.MeshLambertMaterial({color: c}));
+                body.position.y = 0.7;
+                body.castShadow = true;
+                const cabin = new THREE.Mesh(new THREE.BoxGeometry(2, 1.0, 2.5), new THREE.MeshLambertMaterial({color: 0x333333}));
+                cabin.position.y = 1.6;
+                group.add(body, cabin);
+                
+                const hl = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 0.1), new THREE.MeshBasicMaterial({color:0xffffaa}));
+                hl.position.set(0, 0.8, 2.15); 
+                group.add(hl);
+
+                const tl = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 0.1), new THREE.MeshBasicMaterial({color:0xff0000}));
+                tl.position.set(0, 0.8, -2.15); 
+                group.add(tl);
+
+            } else if (type === 'cyclist') {
+                const bike = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.5, 2), new THREE.MeshLambertMaterial({color: COLORS.silver}));
+                bike.position.y = 0.75;
+                const person = new THREE.Mesh(new THREE.SphereGeometry(0.6), new THREE.MeshLambertMaterial({color: c}));
+                person.position.set(0, 1.8, 0);
+                group.add(bike, person);
+            } else if (type === 'pedestrian') {
+                const body = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 1.6), new THREE.MeshLambertMaterial({color: c}));
+                body.position.y = 0.8;
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.3), new THREE.MeshLambertMaterial({color: 0xffccaa}));
+                head.position.y = 1.8;
+                group.add(body, head);
+            }
+            return group;
+        }
+
+        function createPathVisuals(path, colorName) {
+            let cHex = COLORS[colorName];
+            if (colorName === 'white') cHex = COLORS.whiteCar;
+            const group = new THREE.Group();
+
+            const points = path.getPoints(50);
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: cHex, opacity: 0.3, transparent: true });
+            const line = new THREE.Line(geometry, material);
+            line.position.y = 0.1; 
+            group.add(line);
+            
+            return group;
+        }
+
+        // --- SCENARIO LOGIC & PERSISTENCE ---
+
+        const PRESET_SCENARIOS = {
+            'empty': [],
+            'left_turn_yield': [
+                { type: 'car', color: 'blue', start: 'S', end: 'N', delay: 0.5, speed: 45 }, 
+                { type: 'car', color: 'red', start: 'N', end: 'E', delay: 0.0, speed: 35 }   
+            ],
+            'pedestrian_crossing': [
+                { type: 'car', color: 'black', start: 'W', end: 'E', delay: 0, speed: 30 },
+                { type: 'pedestrian', color: 'orange', start: 'N', end: 'S', delay: 1.5, speed: 5 } 
+            ],
+            'traffic_jam': [
+                { type: 'car', color: 'blue', start: 'S', end: 'N', delay: 0, speed: 50 },
+                { type: 'car', color: 'white', start: 'N', end: 'S', delay: 0.5, speed: 50 },
+                { type: 'car', color: 'red', start: 'W', end: 'E', delay: 2.0, speed: 40 },
+                { type: 'car', color: 'green', start: 'E', end: 'S', delay: 3.5, speed: 30 },
+                { type: 'cyclist', color: 'orange', start: 'S', end: 'E', delay: 1.0, speed: 15 } 
+            ]
+        };
+
+        function initScenarios() {
+            try {
+                const saved = localStorage.getItem('traffic_scenarios');
+                if (saved) {
+                    STATE.savedScenarios = JSON.parse(saved);
+                }
+            } catch(e) { console.log("LS Error"); }
+            
+            updateScenarioSelect();
+
+            const params = new URLSearchParams(window.location.search);
+            const sharedData = params.get('scene');
+            if (sharedData) {
+                try {
+                    const decoded = atob(sharedData);
+                    const actors = JSON.parse(decoded);
+                    if (Array.isArray(actors)) {
+                        loadActors(actors);
+                        showToast("Shared scenario loaded!");
+                        return; 
+                    }
+                } catch (e) { console.error("Invalid shared data"); }
+            }
+        }
+
+        function updateScenarioSelect() {
+            const select = document.getElementById('scenarioSelect');
+            const currentVal = select.value;
+            
+            let html = `
+                <option value="empty">Empty Intersection</option>
+                <option value="left_turn_yield">Left Turn Yield</option>
+                <option value="pedestrian_crossing">Pedestrian Crossing</option>
+                <option value="traffic_jam">Busy Junction</option>
+            `;
+            Object.keys(STATE.savedScenarios).forEach(name => {
+                html += `<option value="saved:${name}">[Saved] ${name}</option>`;
+            });
+            
+            select.innerHTML = html;
+            if (currentVal && (PRESET_SCENARIOS[currentVal] || STATE.savedScenarios[currentVal.substring(6)])) {
+                select.value = currentVal;
+            }
+        }
+
+        function saveCurrentScenario() {
+            const currentConfig = STATE.actors.map(a => ({
+                type: a.type, color: a.color, start: a.start, end: a.end, delay: a.delay, speed: a.speed || (a.path.getLength()/a.duration)
+            }));
+            
+            if (currentConfig.length === 0) {
+                showToast("Nothing to save!");
+                return;
+            }
+
+            const name = prompt("Name your scenario:", "My Scenario " + Object.keys(STATE.savedScenarios).length);
+            if (name) {
+                STATE.savedScenarios[name] = currentConfig;
+                localStorage.setItem('traffic_scenarios', JSON.stringify(STATE.savedScenarios));
+                updateScenarioSelect();
+                showToast("Scenario saved to Browser Local Storage!", true);
+            }
+        }
+
+        function shareScenario() {
+            const currentConfig = STATE.actors.map(a => ({
+                type: a.type, color: a.color, start: a.start, end: a.end, delay: a.delay, speed: a.speed || (a.path.getLength()/a.duration)
+            }));
+            
+            if (currentConfig.length === 0) {
+                showToast("Add traffic first!");
+                return;
+            }
+
+            const jsonStr = JSON.stringify(currentConfig);
+            const b64 = btoa(jsonStr);
+            const url = window.location.href.split('?')[0] + '?scene=' + b64;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = url;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if(successful) {
+                    showToast("URL copied to clipboard!");
+                } else {
+                    showToast("Failed to copy URL.");
+                }
+            } catch (err) {
+                showToast("Failed to copy URL.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function loadScenario() {
+            const val = document.getElementById('scenarioSelect').value;
+            let data = [];
+            
+            if (val.startsWith('saved:')) {
+                const name = val.substring(6);
+                data = STATE.savedScenarios[name] || [];
+            } else {
+                data = PRESET_SCENARIOS[val] || [];
+            }
+            
+            loadActors(data);
+        }
+
+        function loadActors(data) {
+            while(actorGroup.children.length > 0) actorGroup.remove(actorGroup.children[0]);
+            while(helperGroup.children.length > 0) helperGroup.remove(helperGroup.children[0]);
+            STATE.actors = [];
+            STATE.isPlaying = false;
+            updatePlayButton();
+            
+            data.forEach(d => {
+                _addActorInternal(d.type, d.color, d.start, d.end, d.delay, d.speed || 40);
+            });
+            renderActorList();
+        }
+
+        function _addActorInternal(type, color, start, end, delay, speed) {
+            const path = createPath(type, start, end);
+            const mesh = createActorMesh(type, color);
+            
+            const startPos = path.getPointAt(0);
+            mesh.position.copy(startPos);
+            const lookPos = path.getPointAt(0.01);
+            mesh.lookAt(lookPos);
+            
+            actorGroup.add(mesh);
+
+            const visuals = createPathVisuals(path, color);
+            helperGroup.add(visuals);
+
+            const len = path.getLength();
+            const duration = len / speed;
+
+            const actor = {
+                id: Date.now() + Math.random(),
+                type, color, start, end, delay,
+                speed, // Store speed for display
+                mesh, path, duration,
+                visuals 
+            };
+
+            STATE.actors.push(actor);
+        }
+
+        // --- APP LOGIC ---
+
+        function updateSpeedDefault() {
+            const type = document.getElementById('newActorType').value;
+            const slider = document.getElementById('newActorSpeed');
+            let val = 40;
+            if (type === 'cyclist') val = 15;
+            if (type === 'pedestrian') val = 6;
+            slider.value = val;
+            document.getElementById('speedVal').innerText = val + ' km/h';
+        }
+
+        function addActorUI() {
+            const type = document.getElementById('newActorType').value;
+            const color = document.getElementById('newActorColor').value;
+            const start = document.getElementById('newActorStart').value;
+            const end = document.getElementById('newActorEnd').value;
+            const delay = parseFloat(document.getElementById('newActorDelay').value);
+            const speed = parseFloat(document.getElementById('newActorSpeed').value);
+
+            if (start === end) {
+                alert("Start and End cannot be the same.");
+                return;
+            }
+
+            if (type === 'pedestrian') {
+                const valid = (start === 'N' && end === 'S') || 
+                              (start === 'S' && end === 'N') || 
+                              (start === 'W' && end === 'E') || 
+                              (start === 'E' && end === 'W');
+                if (!valid) {
+                    alert("Pedestrians can only cross straight (N-S or E-W).");
+                    return;
+                }
+            }
+
+            _addActorInternal(type, color, start, end, delay, speed);
+            renderActorList();
+        }
+
+        function removeActor(id) {
+            const idx = STATE.actors.findIndex(a => a.id === id);
+            if (idx !== -1) {
+                actorGroup.remove(STATE.actors[idx].mesh);
+                helperGroup.remove(STATE.actors[idx].visuals);
+                STATE.actors.splice(idx, 1);
+                renderActorList();
+            }
+        }
+
+        function renderActorList() {
+            const list = document.getElementById('actor-list');
+            list.innerHTML = '';
+            STATE.actors.forEach(a => {
+                const div = document.createElement('div');
+                div.className = 'actor-item';
+                
+                const speedDisplay = a.speed ? Math.round(a.speed) : Math.round(a.path.getLength() / a.duration);
+                
+                div.innerHTML = `
+                    <button class="remove-btn" onclick="removeActor(${a.id})">×</button>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:2px; padding-right:20px;">
+                        <strong>${a.type}</strong>
+                        <span style="font-size:10px; color:#999; background:#eee; padding:1px 4px; border-radius:3px;">+${a.delay}s</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; padding-right:20px;">
+                        <span>${a.start} → ${a.end}</span>
+                        <span style="font-size:10px; color:#999;">${speedDisplay} km/h</span>
+                    </div>
+                `;
+                let cCode = COLORS[a.color];
+                if (a.color === 'white') cCode = 0xcccccc;
+                div.style.borderLeftColor = '#' + new THREE.Color(cCode).getHexString();
+                list.appendChild(div);
+            });
+            
+            if (STATE.actors.length === 0) {
+                 list.innerHTML = '<div style="text-align:center; color:#999; padding:10px; font-size:11px;">No traffic added</div>';
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.opacity = 1;
+            t.style.transform = "translateX(-50%) translateY(0)";
+            setTimeout(() => {
+                t.style.opacity = 0;
+                t.style.transform = "translateX(-50%) translateY(10px)";
+            }, 3000);
+        }
+
+        // --- PLAYER LOGIC ---
+
+        function togglePlay() {
+            if (STATE.isPlaying) {
+                STATE.isPlaying = false;
+                document.getElementById('play-btn').classList.remove('is-playing');
+            } else {
+                if (STATE.time === 0 || STATE.time >= STATE.maxDuration) {
+                    STATE.maxDuration = 0;
+                    STATE.actors.forEach(a => {
+                        const total = a.delay + a.duration;
+                        if (total > STATE.maxDuration) STATE.maxDuration = total;
+                    });
+                    STATE.maxDuration += 1.5;
+                    
+                    STATE.actors.forEach(a => {
+                        a.mesh.visible = false;
+                        a.visuals.visible = false; 
+                    });
+                    
+                    if (STATE.time >= STATE.maxDuration) STATE.time = 0;
+                }
+                STATE.isPlaying = true;
+                document.getElementById('play-btn').classList.add('is-playing');
+            }
+            updatePlayButton();
+        }
+
+        function resetSimulation() {
+            STATE.isPlaying = false;
+            document.getElementById('play-btn').classList.remove('is-playing');
+            STATE.time = 0;
+            STATE.actors.forEach(a => {
+                a.mesh.visible = true;
+                a.mesh.position.copy(a.path.getPointAt(0));
+                a.mesh.lookAt(a.path.getPointAt(0.01));
+                a.visuals.visible = true;
+            });
+            updatePlayButton();
+        }
+        
+        function toggleLoop() {
+            STATE.loop = !STATE.loop;
+            const btn = document.getElementById('loop-btn');
+            if (STATE.loop) btn.classList.add('active');
+            else btn.classList.remove('active');
+        }
+        
+        function updatePlayButton() {
+            const btn = document.getElementById('play-btn');
+            btn.innerText = STATE.isPlaying ? '⏸' : '▶';
+        }
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const dt = clock.getDelta();
+
+            if (STATE.isPlaying) {
+                STATE.time += dt;
+
+                STATE.actors.forEach(a => {
+                    if (STATE.time >= a.delay) {
+                        const runTime = STATE.time - a.delay;
+                        const t = runTime / a.duration;
+
+                        if (t >= 0 && t <= 1) {
+                            a.mesh.visible = true;
+                            const pos = a.path.getPointAt(t);
+                            a.mesh.position.copy(pos);
+                            const nextT = Math.min(t + 0.01, 1);
+                            const nextPos = a.path.getPointAt(nextT);
+                            a.mesh.lookAt(nextPos);
+                        } else {
+                            a.mesh.visible = false; 
+                        }
+                    } else {
+                        a.mesh.visible = false;
+                    }
+                });
+
+                if (STATE.loop && STATE.time > STATE.maxDuration) {
+                    STATE.time = 0; 
+                } else if (!STATE.loop && STATE.time > STATE.maxDuration) {
+                    STATE.isPlaying = false; 
+                    document.getElementById('play-btn').classList.remove('is-playing');
+                    updatePlayButton();
+                    resetSimulation();
+                }
+            }
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            const aspect = (window.innerWidth - 280) / window.innerHeight;
+            camera.left = -d * aspect;
+            camera.right = d * aspect;
+            camera.top = d;
+            camera.bottom = -d;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth - 280, window.innerHeight);
+        });
+
+        // Initialize
+        buildIntersection();
+        updateSpeedDefault();
+        initScenarios();
+        animate();
+
+    </script>
+</body>
+</html>

@@ -8,7 +8,10 @@ tags:
   - Markdown
   - Text Mining
 summary: "Reviews text-mining using Hugging Face models."
-
+image:
+  caption: 'Image credit: [**unsplash**](https://unsplash.com/de/fotos/captcha-cvBBO4PzWPg)'
+  focal_point: ""
+  preview_only: false
 
 ---
 
