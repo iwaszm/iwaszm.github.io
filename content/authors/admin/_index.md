@@ -76,14 +76,6 @@ education:
       Experimental Psychology, Cognitive Psychology, Statistics, Mathematics
 
 work:
-  - position: Senior Data Analyst
-    company_name: GETEC Group
-    company_url: 'https://www.getec.de/'
-    company_logo: ''
-    date_start: 2025-01-01
-    date_end: 2025-04-30
-    summary: |2-
-      Built automated reporting pipelines, improving data availability and reducing manual reporting time
   - position: Research Associate
     company_name: German Aerospace Center, Institute of Transportation Systems
     company_url: 'https://www.dlr.de/de/ts'
