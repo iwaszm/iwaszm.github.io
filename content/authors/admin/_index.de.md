@@ -19,7 +19,7 @@ profiles:
   - icon: brands/linkedin
     url: https://www.linkedin.com/in/meng-zhang-a56960a9/
   - icon: academicons/google-scholar
-    url: https://scholar.google.com/citations?user=ZJkJiRkAAAAJ
+    url: https://scholar.google.de/citations?user=ZJkJiRkAAAAJ&hl=en
   - icon: academicons/orcid
     url: https://orcid.org/0000-0003-1655-764X
 
