@@ -8,6 +8,24 @@ en:
   # Uncomment for multi-lingual sites, and move English content into `en` sub-folder.
   #contentDir: content/en
 
+de:
+  languageCode: de-DE
+  title: Mengs Seite
+  menu:
+    main:
+      - name: Überblick
+        url: /
+        weight: 10
+      - name: Publikationen
+        url: publications/
+        weight: 11
+      - name: Projekte
+        url: projects/
+        weight: 20
+      - name: Lebenslauf
+        url: experience/
+        weight: 30
+
 # Uncomment the lines below to configure your website in a second language.
 #zh:
 #  languageCode: zh-Hans

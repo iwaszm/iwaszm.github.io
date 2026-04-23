@@ -1,5 +1,5 @@
 ---
-title: 'Papers'
+title: 'Projekte'
 date: 2025-11-01
 type: landing
 
@@ -9,11 +9,12 @@ design:
 sections:
   - block: collection
     content:
-      title: Selected Publications
-      text: Here are a selection of publications that I have worked on over the years.
+      title: Projekte
+      text: Eine Auswahl von Projekten, an denen ich gearbeitet habe.
       filters:
+        language: en
         folders:
-          - publications
+          - projects
     design:
       view: article-grid
       fill_image: false

@@ -1,5 +1,5 @@
 ---
-title: 'Papers'
+title: 'Publikationen'
 date: 2025-11-01
 type: landing
 
@@ -9,9 +9,10 @@ design:
 sections:
   - block: collection
     content:
-      title: Selected Publications
-      text: Here are a selection of publications that I have worked on over the years.
+      title: Publikationen
+      text: Eine Auswahl meiner Publikationen.
       filters:
+        language: en
         folders:
           - publications
     design:
