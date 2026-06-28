@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R | Meng&#39;s Page</title>
+    <link>http://192.168.178.39:1313/tags/r/</link>
+      <atom:link href="http://192.168.178.39:1313/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    <description>R</description>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sun, 26 Oct 2025 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://192.168.178.39:1313/media/icon_hu_3c4bb17454bfe3f5.png</url>
+      <title>R</title>
+      <link>http://192.168.178.39:1313/tags/r/</link>
+    </image>
+    
+    <item>
+      <title>Text-Mining Demo</title>
+      <link>http://192.168.178.39:1313/projects/classification/</link>
+      <pubDate>Sun, 26 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>http://192.168.178.39:1313/projects/classification/</guid>
+      <description>&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
+&lt;div class=&#34;text-base  text-justify&#34;&gt;
+This demo explores the use of _Hugging Face zero-shot text classification models_ to analyze multilingual user comments (e.g., YouTube). Two classification dimensions are focused on:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Sentiment&lt;/strong&gt;: whether the comment is positive, neutral, or negative&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Category&lt;/strong&gt;: what the comment refers to (functionality, UI, or ads)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;selected-models&#34;&gt;Selected Models&lt;/h3&gt;
+&lt;p&gt;Three pre-trained NLI-based transformer models are used for comparison:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Model A: &lt;code&gt;facebook/bart-large-mnli&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Model B: &lt;code&gt;joeddav/xlm-roberta-large-xnli&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Model C: &lt;code&gt;typeform/distilbert-base-uncased-mnli&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;classification&#34;&gt;Classification&lt;/h3&gt;
+&lt;p&gt;Following are 10 manually labeled comments, spanning multiple languages, sentiment types, and categories. Each model classifies each comment for both sentiment and category, correct results are shown in &lt;strong&gt;bold&lt;/strong&gt; in the table below.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;overflow-x-auto text-sm&#34;&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Comment&lt;/th&gt;
+          &lt;th&gt;Sentiment&lt;/th&gt;
+          &lt;th&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;/th&gt;
+          &lt;th&gt;Category&lt;/th&gt;
+          &lt;th&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;/td&gt;
+          &lt;td&gt;A&lt;/td&gt;
+          &lt;td&gt;B&lt;/td&gt;
+          &lt;td&gt;C&lt;/td&gt;
+          &lt;td&gt;A&lt;/td&gt;
+          &lt;td&gt;B&lt;/td&gt;
+          &lt;td&gt;C&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;The video loads fast and never lags. Love it!&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;positive&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;positive&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;positive&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;functionality&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;functionality&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;functionality&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;The search function works fine, but nothing special.&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;neutral&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;functionality&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;functionality&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;user interface&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;I can’t rewind properly anymore, super annoying.&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;functionality&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;functionality&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;functionality&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;I like how the app looks now, clean and smooth.&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;positive&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;positive&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;positive&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;user interface&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;user interface&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;functionality&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;I am ok with the UI, it can be better though.&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;user interface&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;user interface&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;functionality&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;The layout is messy after the latest update.&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;user interface&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;user interface&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;functionality&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Way too many ads these days, it ruins the experience.&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;ads&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;ads&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;ads&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Ads are skippable now, so it’s not too bad.&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;ads&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;functionality&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;ads&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;DE: Zu viele nervige Werbungen, es macht keinen Spaß mehr.&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;negative&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;ads&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;ads&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;functionality&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;CN: 功能正常，但感觉有点卡。&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;positive&lt;/td&gt;
+          &lt;td&gt;user interface&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;functionality&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;user interface&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&#34;text-base  text-justify&#34;&gt;
+&lt;h3 id=&#34;performance&#34;&gt;Performance&lt;/h3&gt;
+&lt;p&gt;Classification performance was compared across three models, &lt;strong&gt;Model A&lt;/strong&gt; (&lt;code&gt;facebook/bart-large-mnli&lt;/code&gt;) achieved higher scores in both the &lt;em&gt;Sentiment&lt;/em&gt; and &lt;em&gt;Category&lt;/em&gt; dimensions.&lt;/p&gt;
+&lt;iframe style=&#34;width:100%; height: 500px; border: 0;&#34;
+        loading=&#34;lazy&#34;
+        allowfullscreen 
+        src=&#34;highchart.html&#34;&gt;&lt;/iframe&gt;
+&lt;h3 id=&#34;next-steps&#34;&gt;Next Steps&lt;/h3&gt;
+&lt;p&gt;App Store and Google Play both provide public access to app reviews.
+By identifying the corresponding app ID (for example, YouTube’s App Store ID is 544007664),
+these review data can be extracted automatically. Combined with the comment classification
+method demonstrated above, this enables real-time categorization of user feedback and helps
+track emerging user needs and pain points.&lt;/p&gt;
+&lt;/div&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

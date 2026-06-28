@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Article-Journal | Meng&#39;s Page</title>
+    <link>http://192.168.178.39:1313/publication_types/article-journal/</link>
+      <atom:link href="http://192.168.178.39:1313/publication_types/article-journal/index.xml" rel="self" type="application/rss+xml" />
+    <description>Article-Journal</description>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sun, 19 Nov 2023 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://192.168.178.39:1313/media/icon_hu_3c4bb17454bfe3f5.png</url>
+      <title>Article-Journal</title>
+      <link>http://192.168.178.39:1313/publication_types/article-journal/</link>
+    </image>
+    
+    <item>
+      <title>Bringing Emotion Theory into the Cockpit</title>
+      <link>http://192.168.178.39:1313/publications/mdpi-emotion-paper/</link>
+      <pubDate>Sun, 19 Nov 2023 00:00:00 +0000</pubDate>
+      <guid>http://192.168.178.39:1313/publications/mdpi-emotion-paper/</guid>
+      <description>&lt;div class=&#34;text-base text-justify&#34;&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;background&#34;&gt;Background&lt;/h3&gt;
+&lt;p&gt;For nearly a century, the scientific debate on emotion has revolved around two fascinating puzzles. First, the nature of emotion: Are joy and sadness distinct entities, like apples and pears, or merely different shades of the same fruit, like red and green apples? Second, the sequence: Do we run because we feel fear, or do we feel fear because we are running? While the academic community has yet to reach a verdict on these theoretical roots, there is one consensus: to truly understand human emotion, we cannot rely on a single source. It requires multimodal measurement, combining physiological signals, facial expressions, and behavioral data.&lt;/p&gt;
+&lt;p&gt;This principle is now reshaping the automotive world. From enhancing the &lt;strong&gt;passenger&amp;rsquo;s well-being&lt;/strong&gt; to solving the complex puzzle of &lt;strong&gt;trust in autonomous vehicles&lt;/strong&gt;, accurate emotion detection is key. Motivated by this, I had the privilege during the early stages of my PhD to independently design and execute a comprehensive multimodal driving simulator experiment, aiming to bridge the gap between abstract theory and real-world application&lt;/p&gt;
+&lt;figure class=&#34;w-full my-6 flex flex-col items-center&#34;&gt; 
+  &lt;img src=&#34;workflow.svg&#34; alt=&#34;Research Framework Diagram&#34;&gt;
+  &lt;figcaption class=&#34;figure-caption&#34;&gt;
+    &lt;strong&gt;Figure 1. The Research Workflow.&lt;/strong&gt;
+  &lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;hypotheses&#34;&gt;Hypotheses&lt;/h3&gt;
+&lt;p&gt;Drawing upon the &lt;em&gt;Component Process Model (CPM)&lt;/em&gt;, the driver&amp;rsquo;s body responses during fear-inducing scenarios would be modulated by specific cognitive appraisals: Novelty and Power. It&amp;rsquo;s hypothesized that these cognitive checks manifest through distinct channels:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The Novelty Hypothesis: The appraisal of Novelty (high unexpectedness) will be indicated by immediate responses, specifically an increase in Pupil Diameter, Skin Conductance Level, and the activation of Upper Face Action Units.&lt;/li&gt;
+&lt;li&gt;The Power Hypothesis: The appraisal of Power (low coping potential/control) will be indicated by a delayed response pattern, specifically an drop in nasal temperature and the activation of Lower Face Action Units.&lt;/li&gt;
+&lt;li&gt;The Temporal Dynamics Hypothesis: In line with the sequential nature of CPM checks, the facical indicators of Novelty are hypothesized to precede the ones of Power, reflecting the cognitive processing order from event detection to coping evaluation.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;methods&#34;&gt;Methods&lt;/h3&gt;
+&lt;p&gt;Driving simulator experiments were conducted using Virtual Reality to elicit fear through critical traffic events. Adopting a mixed-methods design, the study integrated objective physiological measurements with subjective assessments. The objective data comprised facial infrared thermography, facial Action Units (AUs), and synchronized peripheral physiological signals. These objective metrics were valided with subjective data collected via the Self-Assessment Manikin (SAM) and the Positive and Negative Affect Schedule (PANAS). This comprehensive approach allowed for the cross-validation of appraisal-driven responses, establishing a robust, multidimensional framework for assessing driver emotions.&lt;/p&gt;
+&lt;figure class=&#34;figure-container&#34;&gt;
+  &lt;img src=&#34;Figure2.png&#34;&gt;
+  &lt;figcaption class=&#34;figure-caption&#34;&gt;
+    &lt;strong&gt;Figure 2. Overview of the multi-sensor experimental setup.&lt;/strong&gt;&lt;br&gt;
+    The diagram shows the integration of physiological, behavioral, and subjective measurement tools within the simulated driving environment (This image is generated by AI).
+  &lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;figure class=&#34;w-full my-6 flex flex-col items-center&#34;&gt; 
+    &lt;iframe src=&#34;AU.html&#34;
+            class=&#34;w-full h-[520px] rounded-xl border border-gray-200 shadow-sm bg-white&#34;
+            loading=&#34;lazy&#34; 
+            allowfullscreen&gt;
+    &lt;/iframe&gt;
+    &lt;figcaption class=&#34;figure-caption&#34;&gt;
+        &lt;strong&gt;Figure 3.&lt;/strong&gt; Mapping of Facial Action Units (AUs) to basic emotion categories.
+    &lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;key-findings&#34;&gt;Key Findings&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;The studies empirically validated the Component Process Model (CPM) as a robust framework for assessing driver emotions.&lt;/li&gt;
+&lt;li&gt;Thermal Imaging as an indicator for &amp;ldquo;Power&amp;rdquo;
+&lt;ul&gt;
+&lt;li&gt;Fear (characterized by low power or low coping potential) was significantly associated with a decrease in nasal tip temperature (vasoconstriction), effectively distinguishing it from high-power emotions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Distinct Facial Signatures for Appraisals
+&lt;ul&gt;
+&lt;li&gt;Novelty: Associated with upper face activation (AUs 1, 2, 4, 5, 7).&lt;/li&gt;
+&lt;li&gt;Power: Associated with lower face activation (AUs 15, 20, 25, 26).&lt;/li&gt;
+&lt;li&gt;Temporal Dynamics: Indicators of Novelty precede those of Power, reflecting the cognitive processing order from event detection to coping evaluation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Multimodal Synchronization &amp;amp; Latency
+&lt;ul&gt;
+&lt;li&gt;A decrease in Novelty (habituation) significantly correlated with reductions in Pupil Diameter (PD), Skin Conductance Level (SCL), and AU intensity.&lt;/li&gt;
+&lt;li&gt;Response Latency: Revealed distinct peak timings for different modalities, with Pupil Diameter peaking earliest (~3.2s), followed by Skin Conductance (~4.1s) and Facial Expressions (~4.3s), and finally Heart Rate (~5.0s).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>Human Performance in Critical Scenarios as a Benchmark for Highly Automated Vehicles</title>
+      <link>http://192.168.178.39:1313/publications/springer-auto-paper/</link>
+      <pubDate>Mon, 19 Jul 2021 00:00:00 +0000</pubDate>
+      <guid>http://192.168.178.39:1313/publications/springer-auto-paper/</guid>
+      <description>&lt;div class=&#34;text-base text-justify&#34;&gt;
+&lt;p&gt;Before &lt;strong&gt;highly automated vehicles (HAVs)&lt;/strong&gt; become part of everyday traffic, their &lt;strong&gt;safety must be proven&lt;/strong&gt;.&lt;br&gt;
+The use of &lt;strong&gt;human performance as a benchmark&lt;/strong&gt; represents a promising approach - yet, appropriate methods to &lt;strong&gt;quantify and compare human and HAV performance&lt;/strong&gt; remain rare.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;By adapting the &lt;em&gt;method of constant stimuli&lt;/em&gt;, a &lt;strong&gt;scenario-based approach&lt;/strong&gt; to quantify the &lt;strong&gt;limit of human performance&lt;/strong&gt; is developed.&lt;br&gt;
+This method is applied in a &lt;strong&gt;driving simulator study&lt;/strong&gt;, where participants repeatedly face a &lt;strong&gt;cut-in manoeuvre&lt;/strong&gt; on a highway.&lt;/p&gt;
+&lt;p&gt;By systematically manipulating the &lt;strong&gt;criticality&lt;/strong&gt; of the manoeuvre - defined in terms of &lt;em&gt;time to collision (TTC)&lt;/em&gt; - humans’ &lt;strong&gt;collision-avoidance performance&lt;/strong&gt; can be measured.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;key-method&#34;&gt;Key Method&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;strong&gt;limit of human performance&lt;/strong&gt; is identified using &lt;strong&gt;logistic regression&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;The &lt;strong&gt;regression curve&lt;/strong&gt; and its &lt;strong&gt;inflection point&lt;/strong&gt; allow direct comparison between &lt;strong&gt;human&lt;/strong&gt; and &lt;strong&gt;HAV&lt;/strong&gt; performance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;The presented approach provides a practical means by which &lt;strong&gt;HAVs’ safety performance&lt;/strong&gt; can be evaluated and proven against &lt;strong&gt;human driving capabilities&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

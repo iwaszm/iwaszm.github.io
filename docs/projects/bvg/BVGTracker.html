@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Abfahrtsmonitor Berlin (Silky Route Connected)</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@500;700&family=VT323&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      /* Colors */
+      --bvg-yellow: #F0E400;
+      --db-red: #EC0016;
+      --ubahn-blue: #0063A5; 
+
+      /* Dark Mode */
+      --bg-body: #222222;
+      --bg-sidebar: #2b2b2b;
+      --bg-section: #1a1a1a;
+      --bg-card: #383838;
+      --bg-input: #1a1a1a;
+      --bg-dropdown: #333333;
+      --bg-tooltip: rgba(30, 30, 30, 0.95);
+      --bg-toggle: #202020;
+      --bg-modal: #2b2b2b;
+      
+      --text-main: #ffffff;
+      --text-muted: #aaaaaa;
+      --text-sub: #dddddd;
+      
+      --border-color: #444444;
+      --hover-bg: #444444;
+      
+      /* Silvery White for Fern */
+      --ice-bg: #F5F5F5; 
+      --ice-text: #111111;
+      --ice-border: #999999;
+
+      --shadow-soft: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    /* Light Mode */
+    body.light-mode {
+      --bg-body: #e0e0e0;
+      --bg-sidebar: #ffffff;
+      --bg-section: #f8f9fa;
+      --bg-card: #ffffff;
+      --bg-input: #f1f3f5;
+      --bg-dropdown: #ffffff;
+      --bg-tooltip: rgba(30, 30, 30, 0.95);
+      --bg-toggle: #eaeaea;
+      --bg-modal: #ffffff;
+      
+      --text-main: #212529;
+      --text-muted: #6c757d;
+      --text-sub: #495057;
+      
+      --border-color: #dee2e6;
+      --hover-bg: #f1f1f1;
+      
+      --ice-bg: #FFFFFF;
+      --ice-text: #000000;
+      --ice-border: #666666;
+
+      --shadow-soft: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    html, body {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden; 
+      margin: 0;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif; 
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overscroll-behavior: none;
+      font-size: 12px;
+    }
+
+    #app {
+      display: flex;
+      width: 100%;
+      height: 100%; 
+      position: relative; 
+    }
+
+    /* --- Sidebar & Layout --- */
+    .sidebar {
+      width: 380px;
+      min-width: 320px;
+      height: 100%;
+      background-color: var(--bg-sidebar);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border-color);
+      z-index: 1000;
+      transition: background-color 0.3s ease, width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      overflow: visible !important; 
+      will-change: height, transform;
+    }
+    
+    .sidebar.is-dragging { transition: none !important; }
+
+    .map-container {
+      flex-grow: 1;
+      height: 100%;
+      position: relative;
+      min-width: 0; 
+      transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .sidebar.full-mode { width: 100% !important; border-right: none; }
+
+    /* --- MOBILE OPTIMIZATIONS --- */
+    @media (max-width: 767px) {
+        #app { flex-direction: column; }
+        
+        .map-container { 
+            position: absolute !important; 
+            top: 0; left: 0; 
+            width: 100% !important; 
+            height: 100% !important; 
+            z-index: 1; 
+        }
+        
+        .sidebar {
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100% !important; 
+            max-height: 100%;
+            border-right: none; 
+            border-bottom: 1px solid var(--border-color); 
+            z-index: 2000; 
+            border-radius: 0 0 16px 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); 
+            touch-action: none; 
+        }
+
+        .sidebar.mobile-collapsed { height: 130px !important; } 
+        
+        .sidebar.mobile-half { height: 50% !important; }
+        .sidebar.mobile-full { 
+            height: 100% !important; 
+            border-radius: 0 !important; 
+            border-bottom: none !important;
+        }
+
+        .sidebar-footer-toggle { 
+            height: 24px; 
+            display: flex; align-items: center; justify-content: center;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto; 
+            background-color: var(--bg-sidebar); 
+        }
+        
+        .modal-filter-row { flex-wrap: nowrap !important; }
+    }
+    
+    @media (min-width: 768px) {
+        .sidebar-footer-toggle { 
+            height: 24px; 
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+    }
+
+    #map { height: 100%; width: 100%; z-index: 1; background-color: var(--bg-body); }
+    
+    .smooth-transition { transition: transform 12s linear; }
+    .no-transition { transition: none !important; }
+
+    /* Header Bar */
+    .sidebar-header {
+        padding: 8px 15px;
+        background-color: var(--bg-section);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+    }
+    .current-time {
+        font-family: 'Roboto Mono', monospace;
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .blink-error { animation: blink-red 1.5s infinite; color: #ff3333; }
+    @keyframes blink-red { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+    /* Search Section */
+    .section-search {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border-color); 
+      background-color: var(--bg-sidebar);
+      position: relative;
+      flex-shrink: 0; 
+      z-index: 2005; 
+    }
+    
+    .main-search-row { display: flex; align-items: center; gap: 8px; }
+    .search-input-wrapper { position: relative; display: flex; align-items: center; flex-grow: 1; min-width: 0; }
+
+    .form-control-dark {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0 12px; height: 42px; border-radius: 8px; width: 100%; font-size: 14px; transition: all 0.3s;
+    }
+    .form-control-dark:focus { border-color: var(--bvg-yellow); box-shadow: 0 0 0 0.2rem rgba(240, 228, 0, 0.25); }
+
+    .input-action-btn {
+      position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 5px;
+    }
+    .input-action-btn:hover { color: var(--text-main); }
+    .clear-btn { right: 10px; } 
+
+    .settings-btn {
+      width: 42px; height: 42px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-muted);
+      cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;
+    }
+    .settings-btn:hover { background-color: var(--hover-bg); color: var(--text-main); }
+
+    /* Filter Buttons */
+    .filter-group { display: flex; gap: 4px; flex-shrink: 0; }
+    .type-btn {
+      width: 32px; height: 32px; border: none; border-radius: 4px; color: #fff;
+      font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      opacity: 0.3; transition: all 0.2s ease; background-color: #444; line-height: 1; 
+    }
+    body.light-mode .type-btn { background-color: #e0e0e0; color: #555; }
+    .type-btn:hover { transform: scale(1.05); opacity: 0.7; }
+    .type-btn.active { opacity: 1; transform: scale(1.0); box-shadow: 0 2px 4px rgba(0,0,0,0.3); color: #fff; }
+    body.light-mode .type-btn.active:not(.btn-fern) { color: #ffffff !important; }
+    
+    .type-btn.active.btn-s { background-color: #008D4F; }
+    .type-btn.active.btn-u { background-color: var(--ubahn-blue); }
+    .type-btn.active.btn-tram { background-color: #CC0000; }
+    .type-btn.active.btn-bus { background-color: #A5027D; }
+    .type-btn.active.btn-re { background-color: #EC0016; } 
+    
+    .type-btn.active.btn-fern { 
+        background-color: var(--ice-bg) !important; 
+        color: var(--ice-text) !important; 
+        border: 1px solid var(--ice-border); 
+        box-shadow: 0 0 5px rgba(255,255,255,0.2);
+    } 
+
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 8px 0; }
+    input[type=range]:focus { outline: none; }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 3px; }
+    input[type=range]::-webkit-slider-thumb { height: 16px; width: 16px; border-radius: 50%; background: var(--bvg-yellow); cursor: pointer; -webkit-appearance: none; margin-top: -6px; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+    .search-dropdown {
+        position: absolute !important; top: 100% !important; left: 0 !important; right: 0 !important;
+        width: 100% !important; background-color: var(--bg-dropdown); border: 1px solid var(--border-color); 
+        border-top: none; z-index: 3000; 
+        max-height: 250px; overflow-y: auto; 
+        box-shadow: 0 8px 24px rgba(0,0,0,0.5); border-radius: 0 0 6px 6px; margin-top: 0; display: block;
+    }
+    .search-item { padding: 10px 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-size: 13px; }
+    .search-item:hover { background-color: var(--hover-bg); }
+    
+    .star-btn { background: none; border: none; color: var(--text-muted); font-size: 14px; padding: 5px; cursor: pointer; }
+    .star-btn.starred { color: var(--bvg-yellow); }
+    body.light-mode .star-btn.starred { color: #d4c800; }
+    .fav-header { padding: 8px 15px; font-size: 11px; color: var(--text-muted); background-color: var(--bg-section); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Info List */
+    .section-info { 
+        flex-grow: 1; 
+        overflow-y: auto; 
+        padding: 10px; 
+        overflow-x: hidden; 
+        background-color: var(--bg-sidebar); 
+        min-height: 0; 
+        touch-action: pan-y; 
+        -webkit-overflow-scrolling: touch; 
+        position: relative;
+    }
+    .pull-indicator {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: -40px; /* Hidden initially */
+        color: var(--text-muted);
+        font-size: 18px;
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+    .bus-card { background-color: var(--bg-card); margin-bottom: 8px; border-radius: 6px; padding: 0; transition: all 0.2s ease; border-left: 4px solid #666; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .bus-card:hover { background-color: var(--hover-bg); }
+    .bus-card.cancelled { opacity: 0.65; border-left-color: var(--text-muted) !important; }
+    .bus-card.cancelled .dest-text, .bus-card.cancelled .line-badge { text-decoration: line-through; color: var(--text-muted); }
+    .bus-card.cancelled .line-badge { background-color: var(--text-muted) !important; color: #fff !important; }
+    .cancel-text { color: #ff5555; font-weight: bold; font-size: 13px; text-transform: none; letter-spacing: 0.5px; }
+    
+    .font-large .bus-card .card-header { padding: 12px 14px; }
+    .font-large .dest-text { font-size: 15px; }
+    .font-large .time-large { font-size: 17px; }
+
+    .card-header { padding: 10px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .card-info-left { flex: 1; min-width: 0; display: flex; flex-direction: column; margin-right: 10px; }
+    .card-time-right { flex-shrink: 0; text-align: right; min-width: 85px; }
+    .bus-card.departed { opacity: 0.5; filter: grayscale(1); }
+
+    .product-bus { border-left-color: #A5027D; }
+    .product-tram { border-left-color: #CC0000; }
+    .product-subway { border-left-color: var(--ubahn-blue); } 
+    .product-suburban { border-left-color: #008D4F; }
+    .product-regional { border-left-color: var(--db-red); }
+    .product-express { border-left-color: #cccccc; }
+
+    /* Animations for Status Dots */
+    @keyframes breathe-green { 0% { box-shadow: 0 0 0 0 rgba(77, 255, 77, 0.6); } 70% { box-shadow: 0 0 0 5px rgba(77, 255, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 255, 77, 0); } }
+    @keyframes breathe-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 170, 0, 0.6); } 70% { box-shadow: 0 0 0 5px rgba(255, 170, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 170, 0, 0); } }
+    @keyframes breathe-red { 0% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.6); } 70% { box-shadow: 0 0 0 5px rgba(255, 51, 51, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); } }
+
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; margin-left: 8px; flex-shrink: 0; display: inline-block; }
+    .status-green { background-color: #4dff4d; animation: breathe-green 2s infinite; }
+    .status-orange { background-color: #ffaa00; animation: breathe-orange 2s infinite; }
+    .status-red { background-color: #ff3333; animation: breathe-red 2s infinite; }
+    .status-static { background-color: #888; }
+    .status-cancel { background-color: #777; border: 1px solid #555; } 
+
+    .line-badge { background-color: #fff; color: #000; font-weight: 800; padding: 1px 5px; border-radius: 3px; font-family: 'Roboto Mono', monospace; font-feature-settings: "tnum"; letter-spacing: -0.5px; font-size: 11px; min-width: 42px; text-align: center; display: inline-block; flex-shrink: 0; margin-right: 8px; border: 1px solid rgba(0,0,0,0.1); }
+    .product-subway .line-badge { background-color: var(--ubahn-blue); color: white; }
+    .product-suburban .line-badge { background-color: #008D4F; color: white; }
+    .product-tram .line-badge { background-color: #CC0000; color: white; }
+    .product-bus .line-badge { background-color: #A5027D; color: white; }
+    .product-regional .line-badge { background-color: var(--db-red); color: white; }
+    .product-express .line-badge { background-color: var(--ice-bg); color: var(--ice-text); border: 1px solid var(--ice-border); }
+
+    .dest-text { font-size: 13px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.3s; }
+    body.light-mode .dest-text { font-weight: 600; }
+    
+    .time-large { font-family: 'Roboto Mono', monospace; font-feature-settings: "tnum"; letter-spacing: -0.5px; font-size: 14px; font-weight: bold; color: var(--text-main); line-height: 1.2; }
+    .time-sub { font-family: 'Roboto Mono', monospace; font-feature-settings: "tnum"; font-size: 11px; color: var(--text-sub); text-align: right; margin-top: 2px; }
+
+    .stopover-container { background-color: rgba(0, 0, 0, 0.2); padding: 8px 12px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+    body.light-mode .stopover-container { background-color: rgba(0, 0, 0, 0.03); border-top: 1px solid rgba(0, 0, 0, 0.05); }
+    .stopover-item { display: flex; align-items: center; padding: 3px 0; min-width: 0; }
+    .stopover-time { font-family: 'Roboto Mono', monospace; font-feature-settings: "tnum"; width: 45px; font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+    .stopover-node { width: 6px; height: 6px; border-radius: 50%; background-color: #aaa; margin: 0 10px; flex-shrink: 0; }
+    .stopover-name { font-size: 12px; color: var(--text-sub); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .weiter-btn { width: 100%; background: none; border: 1px dashed var(--border-color); color: var(--text-muted); font-size: 11px; padding: 4px; margin-top: 8px; border-radius: 4px; }
+    .weiter-btn:hover { background-color: var(--hover-bg); color: var(--text-main); }
+
+    .sidebar-footer-toggle { 
+        height: 24px;  
+        background-color: var(--bg-toggle); 
+        border-top: 1px solid var(--border-color);
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        cursor: grab; 
+        color: var(--text-muted); 
+        transition: background-color 0.2s, color 0.2s; 
+        flex-shrink: 0; 
+        font-size: 12px; 
+        z-index: 1002; 
+        box-sizing: content-box;
+        touch-action: none; 
+        margin-top: auto; 
+    }
+    .sidebar-footer-toggle:hover { background-color: var(--hover-bg); }
+    .sidebar-footer-toggle:active { cursor: grabbing; }
+    
+    .handle-bar {
+        width: 40px;
+        height: 4px; 
+        background-color: #666;
+        border-radius: 2px;
+        transition: background-color 0.3s;
+    }
+    .sidebar-footer-toggle:hover .handle-bar { background-color: var(--bvg-yellow); }
+    body.light-mode .sidebar-footer-toggle:hover .handle-bar { background-color: #d4c800; }
+
+    /* Settings Modal */
+    .settings-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 5000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px; }
+    .settings-modal { background-color: var(--bg-modal); width: 100%; max-width: 360px; max-height: 85vh; border-radius: 12px; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid var(--border-color); color: var(--text-main); overflow: hidden; }
+    .settings-header { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 16px; }
+    .settings-close { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; }
+    .settings-close:hover { color: var(--text-main); }
+    .settings-content { padding: 15px; overflow-y: auto; }
+    .settings-section { margin-bottom: 20px; }
+    .settings-section-title { font-size: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 10px; font-weight: 700; }
+    
+    .control-row-split { display: flex; justify-content: space-between; align-items: stretch; width: 100%; margin-bottom: 10px; gap: 8px; height: 42px; }
+    .theme-group { display: flex; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; padding: 2px; flex: 3; }
+    .btn-independent { flex: 1; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; transition: all 0.2s; height: 100%; }
+    .btn-independent:hover { background-color: var(--hover-bg); color: var(--text-main); border-color: var(--bvg-yellow); }
+    .btn-independent.active { background-color: var(--bg-card); color: var(--text-main); border-color: #999; }
+    .icon-btn { flex: 1; border: none; background: transparent; color: var(--text-muted); padding: 0; font-size: 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; height: 100%; }
+    .icon-btn:hover { color: var(--text-main); background-color: rgba(255,255,255,0.05); }
+    .icon-btn.active { background-color: var(--bg-card); color: var(--text-main); box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border-color); }
+    .icon-btn.active-led { background-color: #000; color: #ffaa00; border: 1px solid #ffaa00; text-shadow: 0 0 4px #ffaa00; }
+    
+    .reset-icon-btn { background-color: transparent !important; background: transparent !important; border: none !important; color: var(--text-muted); font-size: 10px; padding: 0 4px; cursor: pointer; transition: color 0.2s; display: flex; align-items: center; justify-content: center; appearance: none; -webkit-appearance: none; }
+    .reset-icon-btn:hover { color: var(--bvg-yellow); background: transparent !important; }
+    body.light-mode .reset-icon-btn:hover { color: #d4c800; }
+
+    .modal-filter-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: nowrap !important; justify-content: space-between; }
+    .modal-filter-row .search-input-wrapper { flex: 1; min-width: 60px; /* Allow shrinking */ }
+    .filter-group { flex-shrink: 0; display: flex; gap: 4px; }
+    
+    .line-filter-list { 
+        display: grid; 
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 6px; 
+        margin-top: 10px; 
+    }
+    .line-toggle { 
+        background-color: var(--bg-input); 
+        border: 1px solid var(--border-color); 
+        color: var(--text-muted); 
+        padding: 5px; 
+        border-radius: 4px; 
+        font-size: 11px; 
+        cursor: pointer; 
+        text-align: center; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 4px; 
+        font-family: 'Roboto Mono', monospace; 
+        font-weight: bold; 
+    }
+    .line-toggle.active { background-color: var(--bg-card); color: var(--text-main); border-color: #666; }
+    .line-toggle.hidden-line { opacity: 0.5; text-decoration: line-through; }
+
+
+    /* Map UI */
+    .rss-icon { color: var(--bvg-yellow); transition: color 0.3s; }
+    
+    .station-tooltip { background-color: rgba(30, 30, 30, 0.95); border: 1px solid var(--bvg-yellow); color: #fff; font-weight: bold; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 12px; padding: 4px 8px; display: flex; align-items: center; gap: 6px; margin-bottom: 0 !important; position: relative; }
+    .leaflet-tooltip-top:before { display: none; }
+    .station-tooltip::after { content: ''; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 2px; height: 15px; background-color: var(--bvg-yellow); z-index: -1; }
+    
+    /* --- VEHICLE LABEL POSITIONING (Connected Style) --- */
+    .vehicle-popup .leaflet-popup-content-wrapper { 
+        background-color: rgba(30, 30, 30, 0.95); 
+        border: 1px solid var(--bvg-yellow); 
+        border-radius: 4px; 
+        padding: 0; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
+        color: #fff; 
+        margin-bottom: 0; 
+        position: relative; 
+        overflow: visible; 
+    }
+    .vehicle-popup .leaflet-popup-content { margin: 6px 10px; font-weight: bold; font-size: 12px; line-height: 1.4; text-align: center; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+    .vehicle-popup-badge { font-family: 'Roboto Mono', monospace; font-feature-settings: "tnum"; font-weight: bold; }
+    .vehicle-popup .leaflet-popup-tip-container { display: none; } 
+    
+    .vehicle-popup .leaflet-popup-content-wrapper::after { 
+        content: ''; 
+        position: absolute; 
+        bottom: -15px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        width: 2px; 
+        height: 15px; 
+        background-color: var(--bvg-yellow); 
+    }
+    
+    .vehicle-popup a.leaflet-popup-close-button { display: none; }
+    .station-pos-marker { background-color: var(--bvg-yellow); border: 3px solid #ffffff; border-radius: 50%; width: 20px; height: 20px; box-shadow: 0 0 15px rgba(240, 228, 0, 0.8); box-sizing: border-box; }
+    .vehicle-marker-wrapper { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+    .vehicle-marker { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; color: white; font-family: 'Roboto Mono', monospace; font-feature-settings: "tnum"; font-weight: bold; font-size: 11px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.4); border: 2px solid white; width: 32px; height: 32px; background-color: #555; cursor: pointer !important; pointer-events: auto; }
+    .marker-bus { background-color: #A5027D; } .marker-tram { background-color: #CC0000; } .marker-subway { background-color: var(--ubahn-blue); } .marker-suburban { background-color: #008D4F; } .marker-regional { background-color: var(--db-red); } .marker-express { background-color: #fff; color: #333; border-color: #999; }
+    .floating-menu { position: absolute; z-index: 2000; display: flex; gap: 4px; background-color: rgba(30, 30, 30, 0.85); backdrop-filter: blur(10px); padding: 6px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: var(--shadow-soft); transition: all 0.3s; }
+    .top-right-zoom { top: 20px; right: 20px; flex-direction: column; padding: 6px; }
+    body.light-mode .floating-menu { background-color: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .menu-btn { width: 38px; height: 38px; border-radius: 50%; background-color: transparent; color: #ccc; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; font-size: 14px; flex-shrink: 0; }
+    body.light-mode .menu-btn { color: #555; }
+    .menu-btn:hover { background-color: rgba(255, 255, 255, 0.15); color: var(--bvg-yellow); transform: scale(1.05); }
+    body.light-mode .menu-btn:hover { background-color: rgba(0, 0, 0, 0.05); color: #d4c800; }
+    
+    .settings-content .search-dropdown {
+        position: absolute !important; top: 100% !important; left: 0 !important; right: 0 !important;
+        width: 100% !important; border-top: 1px solid var(--border-color); box-shadow: none; margin-top: 0;
+        border-radius: 0 0 6px 6px; max-height: 200px; overflow-y: auto; display: block; 
+        background-color: var(--bg-dropdown); z-index: 2000;
+    }
+
+    /* LED Mode */
+    .led-mode .section-info { background-color: #000000 !important; border-top: 2px solid #333; }
+    .led-mode .current-time { font-family: 'VT323', monospace !important; color: #ffaa00 !important; font-size: 24px !important; letter-spacing: 2px; text-shadow: 0 0 5px rgba(255, 170, 0, 0.5); }
+    .led-mode .form-control-dark { background-color: #000 !important; border-color: #555 !important; color: #ffaa00 !important; font-family: 'VT323', monospace !important; font-size: 18px !important; letter-spacing: 1px; }
+    .led-mode .settings-btn { background-color: #000 !important; border-color: #555 !important; color: #ffaa00 !important; }
+    .led-mode .bus-card { background-color: #000000 !important; border-bottom: 1px dashed #333; border-left: none !important; border-radius: 0 !important; margin-bottom: 0; box-shadow: none; }
+    .led-mode .bus-card:hover { background-color: #111 !important; }
+    .led-mode .dest-text { font-family: 'VT323', monospace !important; font-size: 20px !important; color: #ffaa00 !important; text-transform: uppercase; letter-spacing: 1px; }
+    .led-mode .line-badge { background-color: transparent !important; color: #ffaa00 !important; border: 1px solid #ffaa00; font-family: 'VT323', monospace !important; font-size: 18px !important; border-radius: 2px; padding: 0 4px; }
+    .led-mode .time-large { font-family: 'VT323', monospace !important; color: #ffaa00 !important; font-size: 22px !important; }
+    .led-mode .time-sub { font-family: 'VT323', monospace !important; color: #cc8800 !important; font-size: 16px !important; }
+    .led-mode .station-info-label { font-family: 'VT323', monospace !important; color: #cc8800 !important; text-transform: uppercase; }
+    .led-mode .status-green { background-color: #ffaa00; animation: none; box-shadow: none; }
+    .led-mode .status-orange { background-color: #ffaa00; animation: none; box-shadow: none; }
+    .led-mode .status-red { background-color: #ff3333; animation: none; box-shadow: none; }
+    .led-mode .status-static { background-color: #555; }
+    .led-mode .stopover-container { background-color: #111; border-top: 1px dashed #333; }
+    .led-mode .stopover-time, .led-mode .stopover-name { font-family: 'VT323', monospace !important; color: #ffaa00 !important; font-size: 18px !important; text-transform: uppercase; }
+    
+    /* LED Mode Second Row Info (Platform & Station Name) */
+    .led-mode .card-sub-info { font-family: 'VT323', monospace !important; color: #cc8800 !important; font-size: 15px !important; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* New Route Stop Label */
+    .route-stop-label {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 10px;
+        font-weight: bold;
+        color: var(--text-main);
+        text-shadow: 0 0 3px var(--bg-body); /* Outline effect */
+        padding: 0;
+        z-index: 1000 !important;
+    }
+    
+    /* API Source Badge - REMOVED VISIBILITY FOR CLEANER LOOK */
+    .api-source-badge { display: none; } 
+    
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Settings Modal -->
+    <div class="settings-modal-overlay" v-if="showSettings" @click.self="showSettings = false">
+        <div class="settings-modal">
+            <div class="settings-header">
+                <span>{{ t.settings }}</span>
+                <button class="settings-close" @click="showSettings = false"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="settings-content">
+                <!-- Section 0: Anzeige & Sprache -->
+                <div class="settings-section">
+                    <div class="settings-section-title">{{ t.displayLang }}</div>
+                    
+                    <div class="control-row-split">
+                        <div class="theme-group">
+                            <button class="icon-btn" :class="{ active: currentTheme === 'light' }" @click="setTheme('light')" :title="t.light">
+                                <i class="fas fa-sun"></i>
+                            </button>
+                            <button class="icon-btn" :class="{ active: currentTheme === 'dark' }" @click="setTheme('dark')" :title="t.dark">
+                                <i class="fas fa-moon"></i>
+                            </button>
+                            <button class="icon-btn" :class="{ 'active active-led': currentTheme === 'led' }" @click="setTheme('led')" title="LED Mode">
+                                <i class="fas fa-digital-tachograph"></i>
+                            </button>
+                        </div>
+                        <button class="btn-independent" :class="{ active: isLargeFont }" @click="toggleFontSize" title="Schriftgröße">
+                            <i class="fas fa-text-height"></i>
+                        </button>
+                        <button class="btn-independent" @click="toggleLang" title="Sprache">
+                            <span style="font-weight: 900; font-size: 11px;">{{ currentLang.toUpperCase() }}</span>
+                        </button>
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="settings-section-title d-flex justify-content-between">
+                            <span>{{ t.timeSpan }}</span>
+                            <span style="color: var(--text-main)">{{ duration }} Min</span>
+                        </div>
+                        <input type="range" v-model.number="duration" min="5" max="120" step="5" @change="onDurationChange">
+                    </div>
+                </div>
+
+                <!-- Section 1: Manage Stations -->
+                <div class="settings-section">
+                    <div class="settings-section-title d-flex justify-content-between align-items-center">
+                        <span>{{ t.watchedStations }}</span>
+                        <button class="reset-icon-btn" @click="resetStations" v-if="station1 || station2" :title="t.reset">
+                            <i class="fas fa-undo-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Slot 1 (Synced with Main) -->
+                    <div class="mb-2">
+                        <div class="search-input-wrapper">
+                            <input 
+                              class="form-control-dark" 
+                              type="text" 
+                              :placeholder="t.searchPlaceholder" 
+                              v-model="s1Query" 
+                              @input="onS1Input"
+                            >
+                            <!-- Show 'X' if there is text -->
+                            <button v-if="s1Query" @click="clearStation(1)" class="input-action-btn clear-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <div v-if="s1Results.length > 0" class="search-dropdown">
+                                <div class="search-item" v-for="s in s1Results" :key="s.id" @click="setStation(1, s)">
+                                     {{ cleanName(s.name) }} <i class="fas fa-plus text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slot 2 -->
+                    <div class="mb-2">
+                        <div class="search-input-wrapper">
+                            <input 
+                              class="form-control-dark" 
+                              type="text" 
+                              :placeholder="t.addPlaceholder" 
+                              v-model="s2Query" 
+                              @input="onS2Input"
+                            >
+                            <button v-if="s2Query" @click="clearStation(2)" class="input-action-btn clear-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <div v-if="s2Results.length > 0" class="search-dropdown">
+                                <div class="search-item" v-for="s in s2Results" :key="s.id" @click="setStation(2, s)">
+                                     {{ cleanName(s.name) }} <i class="fas fa-plus text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Line Filter & Vehicle Types -->
+                <div class="settings-section">
+                    <div class="settings-section-title d-flex justify-content-between align-items-center">
+                        <span>{{ t.watchedLines }}</span>
+                        <button class="reset-icon-btn" @click="resetLineFilters" v-if="excludedLines.size > 0" :title="t.reset">
+                            <i class="fas fa-undo-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="modal-filter-row">
+                         <div class="filter-group">
+                            <button class="type-btn btn-s" :class="{ active: isTypeActive('suburban') }" @click="toggleType('suburban')">S</button>
+                            <button class="type-btn btn-u" :class="{ active: isTypeActive('subway') }" @click="toggleType('subway')">U</button>
+                            <button class="type-btn btn-tram" :class="{ active: isTypeActive('tram') }" @click="toggleType('tram')">Tram</button>
+                            <button class="type-btn btn-bus" :class="{ active: isTypeActive('bus') }" @click="toggleType('bus')">Bus</button>
+                            <button class="type-btn btn-re" :class="{ active: isTypeActive('regional') }" @click="toggleType('regional')">RE</button>
+                            <button class="type-btn btn-fern" :class="{ active: isTypeActive('express') }" @click="toggleType('express')">Fern</button>
+                         </div>
+                    </div>
+
+                    <div class="line-filter-list">
+                        <div 
+                          v-for="lineName in filteredLineList" 
+                          :key="lineName" 
+                          class="line-toggle" 
+                          :class="{ 'active': !excludedLines.has(lineName), 'hidden-line': excludedLines.has(lineName) }"
+                          @click="toggleLineExclusion(lineName)"
+                        >
+                             {{ lineName }}
+                        </div>
+                    </div>
+                    <div v-if="filteredLineList.length === 0" class="text-muted small text-center mt-2">
+                        {{ t.noLinesFound }}
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="mt-4 text-center" style="font-size: 10px; line-height: 1.4; border-top: 1px solid var(--border-color); padding-top: 10px; color: #aaaaaa;">
+                    <div>{{ t.dataSource }}: <a href="https://v6.bvg.transport.rest" target="_blank" style="color: inherit; text-decoration: underline;">v6.bvg.transport.rest</a></div>
+                    <div>{{ t.disclaimer }}</div>
+                    <div><a href="https://github.com/iwaszm/BerlinStationMonitor" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Left Sidebar with Touch Events -->
+    <div 
+        class="sidebar" 
+        ref="sidebarRef"
+        :class="[
+            sidebarMobileClass, 
+            { 'full-mode': !showMap, 'led-mode': isLedMode, 'font-large': isLargeFont, 'is-dragging': isDragging }
+        ]"
+    >
+      
+      <!-- 1. Header -->
+      <div class="sidebar-header">
+          <div class="current-time">
+              {{ currentTime }}
+              <i v-if="networkError" class="fas fa-rss ms-2 blink-error" title="Netzwerkfehler"></i>
+          </div>
+      </div>
+
+      <!-- 2. Search Section -->
+      <div class="section-search">
+        <div class="main-search-row">
+            <div class="search-input-wrapper">
+              <input
+                class="form-control-dark"
+                type="text"
+                :placeholder="t.searchPlaceholder"
+                v-model="mainSearchQuery"
+                @input="onMainInput"
+                @focus="showFavorites"
+              />
+              <button v-if="mainSearchQuery" @click="resetStations()" class="input-action-btn clear-btn">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <button class="settings-btn" @click="showSettings = true" :title="t.settings">
+                <i class="fas fa-sliders-h"></i>
+            </button>
+        </div>
+
+        <!-- Search Results Dropdown -->
+        <div class="search-dropdown" v-if="displayResults.length > 0">
+          <div v-if="isShowingFavorites" class="fav-header">
+            <i class="fas fa-star me-2"></i>{{ t.favorites }}
+          </div>
+          <div
+            class="search-item"
+            v-for="station in displayResults"
+            :key="station.id"
+            @click="selectStation(station)"
+          >
+            <div><i class="fas fa-map-marker-alt me-2" style="opacity: 0.6"></i>{{ cleanName(station.name) }}</div>
+            <button 
+              class="star-btn" 
+              :class="{ 'starred': isStarred(station.id) }" 
+              @click.stop="toggleStar(station)"
+              :title="t.favorites"
+            >
+              <i class="fas" :class="isStarred(station.id) ? 'fa-star' : 'fa-star'"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Info List (Flexible) -->
+      <div 
+        class="section-info" 
+        :class="infoStateClass" 
+        ref="infoSectionRef"
+        @touchstart="onPullStart"
+        @touchmove="onPullMove"
+        @touchend="onPullEnd"
+      >
+        <!-- Pull To Refresh Indicator -->
+        <div class="pull-indicator" :style="{ opacity: pullOpacity, transform: `translateY(${pullTranslate}px)` }">
+            <i class="fas fa-sync-alt" :class="{ 'fa-spin': isRefreshing }"></i>
+        </div>
+
+        <div v-if="loading && !isRefreshing" class="text-center py-4">
+          <div class="spinner-border text-warning" role="status"></div>
+          <div class="mt-2 small" style="color: var(--text-muted)">{{ t.loading }}</div>
+        </div>
+
+        <div v-else-if="departures.length === 0 && !loading && watchedStations.length > 0" class="text-center py-4 text-muted">
+           <small>{{ t.noDepartures.replace('{t}', duration) }}</small>
+        </div>
+
+        <div
+          class="bus-card"
+          v-for="dep in departures"
+          :key="dep.uniqueId"
+          :class="[
+            getProductClass(dep.line.product), 
+            { 'departed': isDeparted(dep) && !dep.cancelled },
+            { 'cancelled': dep.cancelled } 
+          ]"
+        >
+          <div class="card-header" @click="toggleTrip(dep)">
+            <div class="card-info-left">
+              <!-- Top Row: Line + Destination -->
+              <div class="d-flex align-items-center"> 
+                <span class="line-badge">{{ dep.line.name }}</span>
+                <div class="dest-text" :title="cleanName(dep.direction)">{{ cleanName(dep.direction) }}</div>
+              </div>
+
+              <!-- Bottom Row: Updated Logic with No Wrap -->
+              <div class="d-flex align-items-center mt-1 card-sub-info" style="font-size: 11px; color: var(--text-muted); line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                 
+                 <!-- Multi Station Mode: Show Station Name -->
+                 <span v-if="watchedStations.length > 1" class="me-2">
+                     <i class="fas fa-map-marker-alt me-1" style="opacity: 0.7; font-size: 9px;"></i>{{ cleanName(dep.stationName) }}
+                 </span>
+
+                 <!-- Rail Only: Platform -->
+                 <span v-if="isRail(dep.line.product) && (dep.platform || dep.plannedPlatform)">
+                     Gl. {{ dep.platform || dep.plannedPlatform }}
+                 </span>
+              </div>
+            </div>
+
+            <div class="card-time-right">
+              <div class="time-large" :class="{ 'cancel-text': dep.cancelled }">
+                {{ dep.cancelled ? t.cancelled : formatTime(dep.when || dep.plannedWhen) }}
+              </div>
+              <div class="time-sub">
+                <span>{{ formatAbsTime(dep.when || dep.plannedWhen) }}</span>
+                <div class="status-dot" :class="getDelayClass(dep)"></div>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="expandedTripId === dep.tripId" class="stopover-container">
+             <div v-if="dep.cancelled" class="text-center text-danger py-2">
+                 <i class="fas fa-ban me-2"></i>{{ t.cancelledMsg }}
+             </div>
+             <div v-else-if="isTripLoading" class="text-center py-2">
+                <div class="spinner-border spinner-border-sm text-secondary"></div>
+             </div>
+             <div v-else>
+                <div class="stopover-item" v-for="stop in visibleStopovers" :key="stop.stop.id">
+                   <div class="stopover-time">{{ formatAbsTime(stop.arrival || stop.plannedArrival || stop.departure) }}</div>
+                   <div class="stopover-node"></div>
+                   <div class="stopover-name">{{ cleanName(stop.stop.name) }}</div>
+                </div>
+                <button v-if="currentTripStopovers.length > stopoverLimit" class="weiter-btn" @click.stop="stopoverLimit += 5">{{ t.loadMore }}</button>
+             </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 4. Draggable Handle (Bottom Footer) -->
+      <div 
+        class="sidebar-footer-toggle" 
+        @click="toggleInfoState" 
+        title="Ansicht ändern"
+        @touchstart.stop="onDragStart"
+        @touchmove.stop="onDragMove"
+        @touchend.stop="onDragEnd"
+      >
+          <div class="handle-bar"></div>
+      </div>
+
+    </div>
+
+    <!-- Right Map -->
+    <div class="map-container" :class="{ 'radar-active': isRadarActive }">
+      <div id="map"></div>
+      <div class="floating-menu top-right-zoom">
+        <button class="menu-btn" @click="zoomIn" :title="t.zoomIn"><i class="fas fa-plus"></i></button>
+        <button class="menu-btn" @click="zoomOut" :title="t.zoomOut"><i class="fas fa-minus"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script>
+    // --- iOS 12 / iPhone 6 Polyfill Check ---
+    if (typeof ResizeObserver === 'undefined') {
+        window.ResizeObserver = class ResizeObserver {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+        };
+    }
+
+    const { createApp, ref, onMounted, computed, watch, onUnmounted, nextTick } = Vue;
+
+    const translations = {
+        de: {
+            settings: "Einstellungen",
+            displayLang: "Anzeige & Sprache",
+            dark: "Dunkel",
+            light: "Hell",
+            timeSpan: "Zeitraum",
+            watchedStations: "Beobachtete Stationen",
+            watchedLines: "Beobachtete Linien",
+            reset: "Zurücksetzen",
+            searchPlaceholder: "Haltestelle suchen...",
+            addPlaceholder: "Haltestelle hinzufügen...",
+            filterLinesPlaceholder: "Filter (z.B. M41)...",
+            noLinesFound: "Keine passenden Linien gefunden.",
+            dataSource: "Datenquelle",
+            disclaimer: "Alle Angaben ohne Gewähr.",
+            favorites: "Favoriten",
+            loading: "Lade Abfahrten...",
+            noDepartures: "Keine Abfahrten in den nächsten {t} Min.",
+            cancelled: "fällt aus",
+            cancelledMsg: "Diese Fahrt fällt leider aus.",
+            now: "Sofort",
+            inMin: "In {t} Min",
+            loadMore: "Weiter...",
+            zoomIn: "Vergrößern",
+            zoomOut: "Verkleinern"
+        },
+        en: {
+            settings: "Settings",
+            displayLang: "Display & Language",
+            dark: "Dark",
+            light: "Light",
+            timeSpan: "Time Span",
+            watchedStations: "Watched Stations",
+            watchedLines: "Watched Lines",
+            reset: "Reset",
+            searchPlaceholder: "Search station...",
+            addPlaceholder: "Add station...",
+            filterLinesPlaceholder: "Filter (e.g. M41)...",
+            noLinesFound: "No matching lines found.",
+            dataSource: "Data Source",
+            disclaimer: "Information provided without guarantee.",
+            favorites: "Favorites",
+            loading: "Loading departures...",
+            noDepartures: "No departures in the next {t} min.",
+            cancelled: "cancelled",
+            cancelledMsg: "This trip is cancelled.",
+            now: "Now",
+            inMin: "In {t} min",
+            loadMore: "Load more...",
+            zoomIn: "Zoom In",
+            zoomOut: "Zoom Out"
+        }
+    };
+
+    createApp({
+      setup() {
+        const currentTime = ref("");
+        const now = ref(new Date());
+        
+        const currentLang = ref('de');
+        const t = computed(() => translations[currentLang.value]);
+
+        const toggleLang = () => {
+            currentLang.value = currentLang.value === 'de' ? 'en' : 'de';
+        };
+
+        const mainSearchQuery = ref(""); // New variable for Main Search Bar
+        const searchQuery = ref(""); 
+        const searchResults = ref([]); 
+        
+        const station1 = ref(null);
+        const station2 = ref(null);
+        const s1Query = ref("");
+        const s2Query = ref("");
+        const s1Results = ref([]);
+        const s2Results = ref([]);
+        
+        const s1AbortController = ref(null);
+        const s2AbortController = ref(null);
+        
+        const showMap = ref(true);
+        const networkError = ref(false); 
+        
+        // Touch Gesture Variables
+        const isDragging = ref(false);
+        const dragStartY = ref(0);
+        const dragStartHeight = ref(0);
+        const sidebarRef = ref(null);
+
+        // Pull To Refresh Variables
+        const infoSectionRef = ref(null);
+        const pullStartY = ref(0);
+        const pullDistance = ref(0);
+        const isRefreshing = ref(false);
+        const pullThreshold = 70; // px
+        const pullOpacity = computed(() => Math.min(pullDistance.value / pullThreshold, 1));
+        const pullTranslate = computed(() => Math.min(pullDistance.value, pullThreshold));
+
+        // --- API Failover Logic REMOVED (Only BVG) ---
+        const apiEndpoints = [
+            { name: 'BVG', url: 'https://v6.bvg.transport.rest' }
+        ];
+        const currentApiIndex = ref(0);
+        const apiBase = computed(() => apiEndpoints[currentApiIndex.value].url);
+        const currentApiName = computed(() => apiEndpoints[currentApiIndex.value].name);
+
+        axios.interceptors.response.use(
+            response => {
+                if (networkError.value) networkError.value = false;
+                return response;
+            },
+            error => {
+                if (error.message === 'Network Error' || error.code === 'ERR_NETWORK' || (error.response && error.response.status >= 500)) {
+                    networkError.value = true;
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        const watchedStations = computed(() => {
+            const list = [];
+            if (station1.value) list.push(station1.value);
+            if (station2.value) list.push(station2.value);
+            return list;
+        });
+
+        // Combined watcher for Main Search Display vs Individual Settings Inputs
+        watch([station1, station2], ([s1, s2]) => {
+            if (s1 && s2) {
+                // Main displays combined
+                mainSearchQuery.value = `${cleanName(s1.name)} + ${cleanName(s2.name)}`;
+                // Inner inputs stay individual
+                s1Query.value = cleanName(s1.name);
+                s2Query.value = cleanName(s2.name);
+            } else if (s1) {
+                // Main displays single
+                mainSearchQuery.value = cleanName(s1.name);
+                s1Query.value = cleanName(s1.name);
+            } else {
+                mainSearchQuery.value = "";
+                s1Query.value = "";
+            }
+        });
+
+        const starredStations = ref([]); 
+        const isShowingFavorites = ref(false); 
+        
+        const currentTheme = ref('dark'); 
+        const isDarkMode = computed(() => currentTheme.value === 'dark' || currentTheme.value === 'led');
+        const isLedMode = computed(() => currentTheme.value === 'led');
+        const isLargeFont = ref(false); 
+        
+        const toggleFontSize = () => {
+            isLargeFont.value = !isLargeFont.value;
+        };
+        
+        const showSettings = ref(false);
+        
+        const departuresRaw = ref([]);
+        
+        const excludedLines = ref(new Set()); 
+
+        const loading = ref(false);
+        const activeFilters = ref(['suburban', 'subway', 'tram', 'bus', 'regional', 'express']);
+        const duration = ref(30);
+        
+        const expandedTripId = ref(null);
+        const currentTripStopovers = ref([]);
+        const isTripLoading = ref(false);
+        const stopoverLimit = ref(5);
+        
+        const isRadarActive = ref(false);
+        const radarError = ref(false);
+
+        const infoState = ref(2); // UPDATED: Default to Full (2)
+
+        const lastRadarData = ref([]);
+
+        let map, baseLayer;
+        let routeLayer; // Layer for drawing vehicle routes
+        let stationMarkers = [];
+        let stationCircles = [];
+        let vehicleMarkers = {}; 
+        let vehicleTrails = {}; 
+        let radarInterval; 
+        
+        let autoRefreshTimer = null; 
+        
+        let searchTimeout;
+        const searchAbortController = ref(null);
+        let radarAbortController = null;
+
+        const productColors = {
+          bus: '#A5027D',
+          tram: '#CC0000',
+          subway: '#0063A5', 
+          suburban: '#008D4F',
+          regional: '#EC0016',
+          express: '#FFFFFF', 
+          default: '#555'
+        };
+
+        const DARK_TILES = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+        const LIGHT_TILES = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+
+        const setTheme = (theme) => {
+            currentTheme.value = theme;
+        };
+        
+        const toggleMap = () => {
+            showMap.value = !showMap.value;
+            if (showMap.value) {
+                nextTick(() => {
+                    if (map) {
+                        map.invalidateSize();
+                    }
+                });
+            }
+        };
+
+        const toggleInfoState = (e) => {
+            if (isDragging.value) return; 
+            if (infoState.value === 2) { infoState.value = 0; } 
+            else if (infoState.value === 0) { infoState.value = 1; } 
+            else { infoState.value = 2; }
+        };
+        
+        const onDragStart = (e) => {
+            isDragging.value = true;
+            dragStartY.value = e.touches[0].clientY;
+            const rect = sidebarRef.value.getBoundingClientRect();
+            dragStartHeight.value = rect.height;
+        };
+        
+        const onDragMove = (e) => {
+            if (!isDragging.value) return;
+            const currentY = e.touches[0].clientY;
+            const deltaY = dragStartY.value - currentY; 
+            let newHeight = dragStartHeight.value + deltaY;
+
+            const maxHeight = window.innerHeight;
+            // FIX 1: Matches CSS rule for collapsed height (approx)
+            const minHeight = 130; 
+            
+            if (newHeight > maxHeight) newHeight = maxHeight;
+            if (newHeight < minHeight) newHeight = minHeight;
+
+            sidebarRef.value.style.height = `${newHeight}px`;
+        };
+        
+        const onDragEnd = (e) => {
+            isDragging.value = false;
+            const finalHeight = parseFloat(sidebarRef.value.style.height) || dragStartHeight.value;
+            sidebarRef.value.style.height = ''; 
+            
+            const windowH = window.innerHeight;
+            const ratio = finalHeight / windowH;
+
+            if (ratio < 0.35) {
+                infoState.value = 0; // Collapsed
+            } else if (ratio < 0.85) {
+                infoState.value = 1; // Half
+            } else {
+                infoState.value = 2; // Full
+            }
+        };
+
+        const infoStateClass = computed(() => {
+            if (infoState.value === 2) return 'state-full mobile-full'; 
+            if (infoState.value === 1) return 'state-half mobile-half';
+            return 'state-collapsed mobile-collapsed';
+        });
+
+        const sidebarMobileClass = computed(() => {
+            if (infoState.value === 2) return 'mobile-full';
+            if (infoState.value === 1) return 'mobile-half';
+            return 'mobile-collapsed';
+        });
+
+        const toggleIcon = computed(() => {
+            if (infoState.value === 2) return 'fa-angles-up'; 
+            return 'fa-chevron-down'; 
+        });
+
+        // --- Pull To Refresh Logic ---
+        const onPullStart = (e) => {
+            if (infoState.value !== 2) return; // Only in Full Mode
+            if (infoSectionRef.value.scrollTop === 0) {
+                pullStartY.value = e.touches[0].clientY;
+            }
+        };
+
+        const onPullMove = (e) => {
+            if (infoState.value !== 2 || pullStartY.value === 0) return;
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - pullStartY.value;
+            
+            if (infoSectionRef.value.scrollTop === 0 && diff > 0) {
+                if (e.cancelable) e.preventDefault(); // Stop native scroll if at top
+                pullDistance.value = diff * 0.5; // Resistance
+            } else {
+                pullDistance.value = 0;
+            }
+        };
+
+        const onPullEnd = () => {
+            if (pullDistance.value > pullThreshold) {
+                isRefreshing.value = true;
+                fetchDepartures(true).then(() => {
+                    setTimeout(() => {
+                        isRefreshing.value = false;
+                        pullDistance.value = 0;
+                    }, 500);
+                });
+            } else {
+                pullDistance.value = 0;
+            }
+            pullStartY.value = 0;
+        };
+
+        const zoomIn = () => { if (map) map.zoomIn(); };
+        const zoomOut = () => { if (map) map.zoomOut(); };
+
+        watch(isDarkMode, (newVal) => {
+          if (newVal) {
+             document.body.classList.remove('light-mode');
+             if (baseLayer) baseLayer.setUrl(DARK_TILES);
+          } else {
+             document.body.classList.add('light-mode');
+             if (baseLayer) baseLayer.setUrl(LIGHT_TILES);
+          }
+        });
+
+        watch(infoState, () => {
+             setTimeout(() => {
+                 if(map) map.invalidateSize();
+             }, 350);
+        });
+
+        onMounted(() => {
+          if (!document.getElementById("map")) return;
+          map = L.map("map", { zoomControl: false }).setView([52.5200, 13.4050], 13);
+          
+          baseLayer = L.tileLayer(isDarkMode.value ? DARK_TILES : LIGHT_TILES, {
+            attribution: '&copy; OpenStreetMap &copy; CARTO'
+          }).addTo(map);
+
+          // Create panes for layering
+          // Lines go in custom pane
+          map.createPane('customRouteLinePane');
+          map.getPane('customRouteLinePane').style.zIndex = 450;
+          
+          // Stops go in higher pane
+          map.createPane('customRouteStopsPane');
+          map.getPane('customRouteStopsPane').style.zIndex = 500;
+
+          routeLayer = L.layerGroup().addTo(map);
+
+          // Clear route when clicking on map background
+          map.on('click', () => {
+              if (routeLayer) routeLayer.clearLayers();
+          });
+
+          map.on('zoomstart', () => {
+              document.querySelectorAll('.leaflet-marker-icon').forEach(el => { el.classList.add('no-transition'); });
+          });
+          map.on('zoomend', () => {
+              setTimeout(() => {
+                  document.querySelectorAll('.leaflet-marker-icon').forEach(el => { el.classList.remove('no-transition'); });
+              }, 100);
+          });
+          
+          const resizeObserver = new ResizeObserver(() => {
+             if(map) map.invalidateSize();
+          });
+          resizeObserver.observe(document.getElementById('app'));
+
+          setInterval(() => { now.value = new Date(); currentTime.value = now.value.toLocaleTimeString("de-DE"); }, 1000);
+          
+          autoRefreshTimer = setInterval(() => {
+              if (watchedStations.value.length > 0) {
+                  fetchDepartures(true);
+              }
+          }, 30000);
+
+          const saved = localStorage.getItem('bvg_fav_stations');
+          if (saved) { starredStations.value = JSON.parse(saved); }
+        });
+
+        onUnmounted(() => {
+          if (radarInterval) clearInterval(radarInterval);
+          if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+        });
+
+        const cleanName = (name) => {
+            if (!name) return "";
+            return name.replace(/\s*\(Berlin\)\s*/gi, "").replace(/,\s*Berlin\s*/gi, "");
+        };
+
+        const isStarred = (id) => starredStations.value.some(s => s.id === id);
+        const toggleStar = (station) => {
+          if (isStarred(station.id)) {
+            starredStations.value = starredStations.value.filter(s => s.id !== station.id);
+          } else {
+            starredStations.value.push({
+              id: station.id,
+              name: station.name,
+              location: station.location, 
+              type: station.type
+            });
+          }
+          localStorage.setItem('bvg_fav_stations', JSON.stringify(starredStations.value));
+        };
+
+        const showFavorites = () => {
+          if (!mainSearchQuery.value && starredStations.value.length > 0) {
+            isShowingFavorites.value = true;
+            s1Results.value = [];
+          }
+        };
+
+        const displayResults = computed(() => {
+          // Use mainSearchQuery for display logic in the main dropdown
+          if (mainSearchQuery.value && s1Results.value.length > 0) { return s1Results.value; } 
+          else if (!mainSearchQuery.value && starredStations.value.length > 0) { return starredStations.value; }
+          return [];
+        });
+
+        watch(mainSearchQuery, (newVal) => {
+          if (!newVal) { isShowingFavorites.value = true; } 
+          else { isShowingFavorites.value = false; }
+        });
+
+        const onSearchInput = () => {
+        };
+        
+        // Handling the Main Search Input (Outer)
+        const onMainInput = () => {
+            // When user types in main, we assume they are searching for a new station (Slot 1)
+            // This syncs the input to s1Query to trigger the existing search logic
+            s1Query.value = mainSearchQuery.value;
+            handleSearch(s1Query, s1Results, s1AbortController);
+        };
+
+        // Handling the Settings Search Input (Inner)
+        const onS1Input = () => {
+            handleSearch(s1Query, s1Results, s1AbortController);
+        };
+        const onS2Input = () => {
+            handleSearch(s2Query, s2Results, s2AbortController);
+        };
+
+        const handleSearch = (queryRef, resultsRef, abortRef) => {
+          if (searchTimeout) clearTimeout(searchTimeout);
+          if (abortRef.value) { abortRef.value.abort(); }
+
+          searchTimeout = setTimeout(async () => {
+            if (!queryRef.value) {
+              resultsRef.value = [];
+              return;
+            }
+
+            // Prevent searching for combined station names
+            if (queryRef.value.includes(" + ")) {
+                return;
+            }
+
+            const controller = new AbortController();
+            abortRef.value = controller;
+
+            try {
+              const res = await axios.get(`${apiBase.value}/locations`, { 
+                params: { query: queryRef.value, results: 6, stops: true },
+                signal: controller.signal 
+              });
+              resultsRef.value = res.data.filter(s => s.type === 'stop');
+            } catch (e) {
+              if (axios.isCancel(e)) return; 
+              console.error(e);
+            }
+          }, 300);
+        };
+
+        const selectStation = (station) => {
+          // When selecting from main search, we assume single station mode or resetting slot 1
+          station1.value = station;
+          station2.value = null; // Clear second station
+          s1Results.value = [];
+          // infoState.value = 1; // Removed this to respect user preference/default 2
+          updateMapForStations();
+          fetchDepartures();
+        };
+
+        const setStation = (slot, station) => {
+            if (slot === 1) {
+                station1.value = station;
+                s1Results.value = [];
+            } else {
+                station2.value = station;
+                s2Results.value = [];
+            }
+            updateMapForStations();
+            fetchDepartures();
+        };
+
+        const clearStation = (slot) => {
+            if (slot === 1) {
+                station1.value = null;
+                s1Results.value = [];
+            } else {
+                station2.value = null;
+                s2Query.value = "";
+                s2Results.value = [];
+            }
+            updateMapForStations();
+            fetchDepartures();
+        };
+
+        const resetStations = () => {
+            station1.value = null;
+            station2.value = null;
+            mainSearchQuery.value = "";
+            s1Query.value = "";
+            s2Query.value = "";
+            s1Results.value = [];
+            s2Results.value = [];
+            updateMapForStations();
+            fetchDepartures();
+        };
+
+        const updateMapForStations = () => {
+            if (!map) return;
+            stationMarkers.forEach(m => map.removeLayer(m));
+            stationCircles.forEach(c => map.removeLayer(c));
+            stationMarkers = [];
+            stationCircles = [];
+            
+            if (watchedStations.value.length === 0) return;
+
+            const bounds = L.latLngBounds();
+
+            watchedStations.value.forEach(station => {
+                if (station.location) {
+                    const lat = station.location.latitude;
+                    const lon = station.location.longitude;
+                    bounds.extend([lat, lon]);
+
+                    const stationIcon = L.divIcon({
+                        className: 'station-pos-marker', 
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10], 
+                        popupAnchor: [0, -10]
+                    });
+
+                    const marker = L.marker([lat, lon], { icon: stationIcon })
+                        .addTo(map)
+                        .bindTooltip(`<div><i class="fas fa-rss me-1 rss-icon"></i>${cleanName(station.name)}</div>`, {
+                            permanent: true, direction: 'top', offset: [0, -22], className: 'station-tooltip' 
+                        });
+                    
+                    stationMarkers.push(marker);
+
+                    const circle = L.circle([lat, lon], {
+                        color: '#F0E400', fillColor: '#F0E400', fillOpacity: 0.08, radius: 2000, weight: 2, dashArray: '5, 10'
+                    }).addTo(map);
+                    stationCircles.push(circle);
+                }
+            });
+
+            if (watchedStations.value.length === 1) {
+                 const s = watchedStations.value[0];
+                 if(s.location) map.setView([s.location.latitude, s.location.longitude], 14);
+            } else {
+                 map.fitBounds(bounds, { padding: [50, 50] });
+            }
+
+            if (radarInterval) clearInterval(radarInterval);
+            
+            for (let id in vehicleMarkers) { map.removeLayer(vehicleMarkers[id]); }
+            for (let id in vehicleTrails) { map.removeLayer(vehicleTrails[id]); }
+            if (routeLayer) routeLayer.clearLayers();
+            vehicleMarkers = {};
+            vehicleTrails = {};
+            lastRadarData.value = [];
+            isRadarActive.value = false;
+        };
+        
+        const focusVehicle = (tripId) => {
+             if (!map) return;
+             const marker = vehicleMarkers[tripId];
+             if (marker) {
+                 map.setView(marker.getLatLng(), 16);
+                 marker.openPopup();
+             }
+        };
+
+        const toggleTrip = async (dep) => {
+          if (expandedTripId.value === dep.tripId) { 
+              expandedTripId.value = null; 
+              if (routeLayer) routeLayer.clearLayers(); // Clear route on collapse
+              return; 
+          }
+          expandedTripId.value = dep.tripId;
+          
+          if(showMap.value) {
+             let p = dep.line.product;
+             if(p === 'nationalExpress' || p === 'national') p = 'express';
+             if(p === 'regionalExp') p = 'regional';
+             const color = productColors[p] || productColors.default;
+             
+             // Check if vehicle is on map
+             const hasVehicle = vehicleMarkers[dep.tripId];
+             
+             if (hasVehicle) {
+                 focusVehicle(dep.tripId);
+                 // If we focus on vehicle, we don't need to fit route
+                 showVehicleRoute(dep.tripId, color, false); 
+             } else {
+                 // UPDATED: If vehicle is missing, we show route BUT do NOT auto-zoom (false)
+                 // This keeps focus on the station as requested.
+                 showVehicleRoute(dep.tripId, color, false); 
+             }
+          }
+
+          if (dep.cancelled) return;
+
+          stopoverLimit.value = 5;
+          isTripLoading.value = true;
+          try {
+            const res = await axios.get(`${apiBase.value}/trips/${encodeURIComponent(dep.tripId)}`, { params: { stopovers: true } });
+            const allStops = res.data.trip.stopovers;
+            const departureTime = new Date(dep.when || dep.plannedWhen);
+
+            currentTripStopovers.value = allStops.filter(stop => {
+               const sTime = stop.arrival || stop.plannedArrival || stop.departure || stop.plannedDeparture;
+               if (!sTime) return false;
+               return new Date(sTime) > departureTime;
+            });
+          } catch (e) { console.error(e); } finally { isTripLoading.value = false; }
+        };
+
+        // --- New Feature: Show Vehicle Route on Map ---
+        const showVehicleRoute = async (tripId, color, fitToPolyline = false) => {
+            if (!routeLayer) return;
+            routeLayer.clearLayers();
+            
+            try {
+                // Fetch trip details with polyline
+                const res = await axios.get(`${apiBase.value}/trips/${encodeURIComponent(tripId)}`, {
+                    params: { polyline: true, stopovers: true }
+                });
+
+                const trip = res.data.trip;
+
+                // 1. Force Extract Polyline Coordinates (FORCE CONNECTION)
+                let lineCoords = [];
+
+                if (trip.polyline) {
+                    // Use Leaflet's GeoJSON utility to parse, then extract coords
+                    L.geoJSON(trip.polyline, {
+                        onEachFeature: function (feature, layer) {
+                            if (feature.geometry.type === 'LineString') {
+                                if (layer.getLatLngs) {
+                                    const latlngs = layer.getLatLngs();
+                                    latlngs.forEach(ll => lineCoords.push(ll));
+                                }
+                            } else if (feature.geometry.type === 'Point') {
+                                if (layer.getLatLng) {
+                                    lineCoords.push(layer.getLatLng());
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // If GeoJSON didn't give us a line (e.g. malformed or missing), fallback to stops
+                if (lineCoords.length < 2 && trip.stopovers) {
+                     lineCoords = trip.stopovers
+                        .filter(s => s.stop && s.stop.location)
+                        .map(s => L.latLng(s.stop.location.latitude, s.stop.location.longitude));
+                }
+
+                // DRAW THE LINE (On Lower Pane)
+                if (lineCoords.length > 1) {
+                    const poly = L.polyline(lineCoords, { 
+                        color: color, 
+                        opacity: 0.8, 
+                        weight: 5, 
+                        lineCap: 'round',
+                        lineJoin: 'round',
+                        className: 'no-transition',
+                        pane: 'customRouteLinePane' // <--- LOWER Z-INDEX
+                    }).addTo(routeLayer);
+                    
+                    // NEW: Fit bounds if requested (e.g. vehicle not visible)
+                    if (fitToPolyline && map) {
+                        map.fitBounds(poly.getBounds(), { padding: [40, 40] });
+                    }
+                }
+
+                // 2. Draw Stops (On Higher Pane)
+                if (trip.stopovers) {
+                    trip.stopovers.forEach(stop => {
+                        if (!stop.stop || !stop.stop.location) return;
+                        const lat = stop.stop.location.latitude;
+                        const lon = stop.stop.location.longitude;
+
+                        L.circleMarker([lat, lon], {
+                            radius: 4,
+                            color: color,
+                            fillColor: isDarkMode.value ? '#222' : '#fff', 
+                            fillOpacity: 1,
+                            weight: 2,
+                            className: 'no-transition',
+                            pane: 'customRouteStopsPane' // <--- HIGHER Z-INDEX
+                        }).bindTooltip(cleanName(stop.stop.name), { 
+                            permanent: true, 
+                            direction: 'auto', 
+                            className: 'route-stop-label',
+                            offset: [5, 0],
+                            pane: 'customRouteStopsPane' // Ensure label is also on top
+                        }).addTo(routeLayer);
+                    });
+                }
+
+            } catch(e) {
+                console.warn("Failed to load vehicle route", e);
+            }
+        };
+
+        const visibleStopovers = computed(() => currentTripStopovers.value.slice(0, stopoverLimit.value));
+
+        const fetchDepartures = async (silent = false) => {
+          if (watchedStations.value.length === 0) {
+              departuresRaw.value = [];
+              return;
+          }
+
+          if (!silent) {
+              loading.value = true;
+              departuresRaw.value = []; // Reset on new search/station change
+          }
+
+          try {
+            const promises = watchedStations.value.map(station => 
+                axios.get(`${apiBase.value}/stops/${station.id}/departures`, { 
+                    params: { duration: duration.value, results: 50 } 
+                }).then(res => {
+                    const deps = res.data.departures || [];
+                    return deps.map(d => ({...d, stationName: station.name, uniqueId: d.tripId + '_' + station.id}));
+                })
+            );
+
+            const results = await Promise.all(promises);
+            const allDeps = results.flat();
+            departuresRaw.value = allDeps;
+            startRadarLoop();
+          } catch (e) { 
+              console.error(e);
+              if (!silent) departuresRaw.value = []; 
+          } finally { 
+              if (!silent) loading.value = false; 
+          }
+        };
+
+        const getBoundingBox = (lat, lon, radiusKm) => {
+            const latDelta = radiusKm / 111; 
+            const lonDelta = radiusKm / (111 * Math.cos(lat * (Math.PI / 180)));
+            return { north: lat + latDelta, south: lat - latDelta, east: lon + lonDelta, west: lon - lonDelta };
+        };
+        
+        const fetchRadar = async () => {
+            if (watchedStations.value.length === 0) return;
+
+            if (radarAbortController) { radarAbortController.abort(); }
+            radarAbortController = new AbortController();
+            const signal = radarAbortController.signal;
+
+            const fetchPromises = watchedStations.value.map(station => {
+                if (!station.location) return Promise.resolve([]);
+                const { latitude, longitude } = station.location;
+                const bbox = getBoundingBox(latitude, longitude, 2.0); 
+                return axios.get(`${apiBase.value}/radar`, {
+                    params: {
+                        north: bbox.north, west: bbox.west, south: bbox.south, east: bbox.east,
+                        results: 256, duration: 60, frames: 3, polylines: true 
+                    },
+                    signal: signal
+                }).then(res => {
+                    return Array.isArray(res.data) ? res.data : (res.data.movements || []);
+                }).catch(e => {
+                    if (axios.isCancel(e)) throw e;
+                    console.warn(`Radar fetch failed for ${station.name}`, e);
+                    return []; 
+                });
+            });
+
+            try {
+                const results = await Promise.all(fetchPromises);
+                const vehicleMap = new Map();
+                results.flat().forEach(v => {
+                    if (v && v.tripId) {
+                        vehicleMap.set(v.tripId, v); 
+                    }
+                });
+                const combinedVehicles = Array.from(vehicleMap.values());
+                isRadarActive.value = true;
+                radarError.value = false;
+                lastRadarData.value = combinedVehicles;
+                if (showMap.value) updateVehicleMarkers(combinedVehicles);
+            } catch (e) {
+                if (axios.isCancel(e)) return;
+                console.warn("Radar update skipped/failed"); 
+            }
+        };
+
+        const updateVehicleMarkers = (vehicles) => {
+            if (!map) return;
+            const activeIds = new Set();
+            const validTripIds = new Set(departures.value.map(d => d.tripId));
+            
+            const mapProduct = (p) => {
+                if(p === 'nationalExpress' || p === 'national') return 'express';
+                if(p === 'regionalExp') return 'regional';
+                return p;
+            };
+
+            const isMapRelevant = (prod) => ['bus', 'tram', 'suburban', 'subway', 'regional', 'ferry', 'regionalExp'].includes(prod);
+
+            vehicles.forEach(v => {
+                if (!v.location || !v.line) return;
+                if (!validTripIds.has(v.tripId)) return; 
+                
+                // FIX 2: Filter out express from map
+                let p = v.line.product;
+                if (p === 'express' || p === 'national' || p === 'nationalExpress') return;
+
+                if (!isMapRelevant(p)) return;
+
+                const tripId = v.tripId;
+                activeIds.add(tripId);
+                const prod = mapProduct(v.line.product) || 'default';
+                const productClass = `marker-${prod}`;
+                const label = v.line.name || '?';
+                const color = productColors[prod] || productColors.default;
+                
+                let polylinePoints = [];
+                if (v.frames && Array.isArray(v.frames)) {
+                    const validFrames = v.frames.filter(f => f && typeof f.latitude === 'number' && typeof f.longitude === 'number');
+                    polylinePoints = validFrames.map(f => [f.latitude, f.longitude]);
+                }
+
+                if (vehicleTrails[tripId]) { map.removeLayer(vehicleTrails[tripId]); }
+                if (polylinePoints.length > 1) {
+                    vehicleTrails[tripId] = L.polyline(polylinePoints, {
+                        color: color, weight: 3, opacity: 0.6, dashArray: '3, 6'
+                    }).addTo(map);
+                }
+
+                const badgeStyle = `background-color: ${color}; color: white; padding: 2px 6px; border-radius: 4px; display: inline-block; line-height: 1.2; font-weight: 800;`;
+                const popupContent = `<div style="display: flex; align-items: center; gap: 8px;"><span class="vehicle-popup-badge" style="${badgeStyle}">${v.line.name}</span> <span>${cleanName(v.direction)}</span></div>`;
+
+                if (vehicleMarkers[tripId]) {
+                    const marker = vehicleMarkers[tripId];
+                    const newLatLng = L.latLng(v.location.latitude, v.location.longitude);
+                    if (marker.getLatLng().distanceTo(newLatLng) > 1) { marker.setLatLng(newLatLng); }
+                    marker.setPopupContent(popupContent);
+                    // Update click listener just in case
+                    marker.off('click').on('click', (e) => {
+                        L.DomEvent.stopPropagation(e); // Stop propagation so map click doesn't clear route
+                        showVehicleRoute(tripId, color);
+                        marker.openPopup(); // Force popup open
+                    });
+                } else {
+                    const html = `<div class="vehicle-marker-wrapper"><div class="vehicle-marker ${productClass}">${label}</div></div>`;
+                    const icon = L.divIcon({ className: 'smooth-transition', html: html, iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -18] });
+                    const marker = L.marker([v.location.latitude, v.location.longitude], { icon: icon })
+                     .addTo(map)
+                     .bindPopup(popupContent, { className: 'vehicle-popup', offset: [0, -2], closeButton: false });
+                    
+                    // BIND CLICK EVENT FOR ROUTE
+                    marker.on('click', (e) => {
+                        L.DomEvent.stopPropagation(e); // Stop propagation
+                        showVehicleRoute(tripId, color);
+                        marker.openPopup(); // Force popup open
+                    });
+
+                    vehicleMarkers[tripId] = marker;
+                }
+            });
+
+            for (let id in vehicleMarkers) {
+                if (!activeIds.has(id)) {
+                    map.removeLayer(vehicleMarkers[id]); delete vehicleMarkers[id];
+                    if (vehicleTrails[id]) { map.removeLayer(vehicleTrails[id]); delete vehicleTrails[id]; }
+                }
+            }
+        };
+
+        const startRadarLoop = () => {
+            if (radarInterval) clearInterval(radarInterval);
+            fetchRadar(); 
+            radarInterval = setInterval(fetchRadar, 8000); 
+        };
+
+        const departures = computed(() => {
+          return departuresRaw.value
+            .filter(d => {
+              let p = d.line.product;
+              if (p === 'nationalExpress' || p === 'national') p = 'express';
+              if (p === 'regionalExp') p = 'regional';
+              
+              return activeFilters.value.includes(p);
+            })
+            .filter(d => {
+                if (excludedLines.value.has(d.line.name)) return false;
+                return true;
+            })
+            .filter(d => {
+               const time = d.when || d.plannedWhen;
+               return (new Date(time) - now.value) >= -30000;
+            })
+            .sort((a, b) => new Date(a.when || a.plannedWhen) - new Date(b.when || b.plannedWhen));
+        });
+
+        watch(departures, (newDeps) => {
+            if (!map) return;
+            const currentTripIds = new Set(newDeps.map(d => d.tripId));
+            for (let id in vehicleMarkers) {
+                if (!currentTripIds.has(id)) {
+                    map.removeLayer(vehicleMarkers[id]); delete vehicleMarkers[id];
+                    if (vehicleTrails[id]) { map.removeLayer(vehicleTrails[id]); delete vehicleTrails[id]; }
+                }
+            }
+            if (lastRadarData.value.length > 0 && showMap.value) { updateVehicleMarkers(lastRadarData.value); }
+        }, { deep: true });
+
+        const uniqueLinesList = computed(() => {
+            const lines = new Set();
+            departuresRaw.value.forEach(d => {
+                if (d.line && d.line.name) {
+                    let p = d.line.product;
+                    if (p === 'nationalExpress' || p === 'national') p = 'express';
+                    if (p === 'regionalExp') p = 'regional';
+                    
+                    if (!activeFilters.value.includes(p)) return;
+                    if (p === 'express') return;
+                    lines.add(d.line.name);
+                }
+            });
+            excludedLines.value.forEach(l => lines.add(l));
+            return Array.from(lines).sort();
+        });
+
+        const filteredLineList = computed(() => {
+            return uniqueLinesList.value;
+        });
+
+        const toggleLineExclusion = (lineName) => {
+            if (excludedLines.value.has(lineName)) {
+                excludedLines.value.delete(lineName);
+            } else {
+                excludedLines.value.add(lineName);
+            }
+        };
+
+        const resetLineFilters = () => {
+            excludedLines.value.clear();
+        };
+
+        const isDeparted = (dep) => (new Date(dep.when || dep.plannedWhen) - now.value) <= 0;
+
+        // UPDATED: Delay Logic
+        const getDelayClass = (d) => {
+            if (d.cancelled) return "status-cancel";
+            if (d.delay === null) return "status-static";
+            
+            const delaySec = d.delay;
+            const p = d.line.product;
+            const isFern = ['express', 'national', 'nationalExpress'].includes(p);
+            
+            // Fern: > 15 min (900s) RED, > 0 ORANGE
+            if (isFern) {
+                if (delaySec >= 900) return "status-red";
+                if (delaySec > 0) return "status-orange";
+            } else {
+                // Others: > 5 min (300s) RED, > 0 ORANGE
+                if (delaySec >= 300) return "status-red";
+                if (delaySec > 0) return "status-orange";
+            }
+            return "status-green"; // On time or early
+        };
+
+        const formatTime = (iso) => {
+          const diff = (new Date(iso) - now.value) / 60000;
+          if (diff <= 0) return "";
+          if (diff <= 0.34) return t.value.now; // 0-20 seconds (approx 0.333)
+          return t.value.inMin.replace('{t}', Math.ceil(diff));
+        };
+        const formatAbsTime = (iso) => iso ? new Date(iso).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "";
+        const isTypeActive = (t) => activeFilters.value.includes(t);
+        const toggleType = (t) => {
+          if (activeFilters.value.includes(t)) activeFilters.value = activeFilters.value.filter(x => x !== t);
+          else activeFilters.value.push(t);
+        };
+        
+        const getProductClass = (p) => {
+             if (p === 'nationalExpress' || p === 'national') return 'product-express';
+             if (p === 'regionalExp') return 'product-regional';
+             return `product-${p}`;
+        };
+
+        // Helper for platform logic (S, U, RE, Fern)
+        const isRail = (p) => ['suburban', 'subway', 'regional', 'regionalExp', 'express', 'national', 'nationalExpress'].includes(p);
+        
+        const clearSearch = () => {
+          clearStation(1);
+          clearStation(2);
+          if (radarInterval) clearInterval(radarInterval);
+          if (map) {
+              for (let id in vehicleMarkers) { map.removeLayer(vehicleMarkers[id]); }
+              for (let id in vehicleTrails) { map.removeLayer(vehicleTrails[id]); }
+              if (routeLayer) routeLayer.clearLayers();
+              vehicleMarkers = {};
+              vehicleTrails = {};
+              lastRadarData.value = [];
+              stationMarkers.forEach(m => map.removeLayer(m));
+              stationMarkers = [];
+              stationCircles.forEach(c => map.removeLayer(c));
+              stationCircles = [];
+          }
+          isRadarActive.value = false;
+        };
+
+        return {
+          currentTime, mainSearchQuery, searchQuery, searchResults, departures, loading, duration, 
+          isTypeActive, toggleType, selectStation, onMainInput, onSearchInput, clearSearch,
+          formatTime, formatAbsTime, getDelayClass, isDeparted, getProductClass,
+          onDurationChange: () => fetchDepartures(), expandedTripId, toggleTrip, isTripLoading,
+          currentTripStopovers, visibleStopovers, stopoverLimit,
+          starredStations, isStarred, toggleStar, displayResults, isShowingFavorites, showFavorites, isRadarActive, radarError, cleanName,
+          isDarkMode, zoomIn, zoomOut,
+          infoState, toggleInfoState, infoStateClass, sidebarMobileClass, toggleIcon,
+          showSettings, setStation, clearStation, watchedStations,
+          filteredLineList, toggleLineExclusion, excludedLines, resetLineFilters,
+          station1, station2, s1Query, s2Query, s1Results, s2Results, onS1Input, onS2Input,
+          showMap, toggleMap, resetStations,
+          t, currentLang, toggleLang,
+          isLedMode, 
+          currentTheme, setTheme, 
+          networkError,
+          isLargeFont, toggleFontSize,
+          sidebarRef,
+          isDragging, onDragStart, onDragMove, onDragEnd,
+          currentApiName,
+          isRail,
+          // Pull To Refresh
+          infoSectionRef, onPullStart, onPullMove, onPullEnd, pullOpacity, pullTranslate, isRefreshing
+        };
+      }
+    }).mount("#app");
+  </script>
+</body>
+</html>
