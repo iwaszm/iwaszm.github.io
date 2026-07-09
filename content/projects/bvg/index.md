@@ -44,7 +44,7 @@ This project was specifically designed and optimized to turn any spare smartphon
     <td align="center" width="50%" style="border: none;">
       <img src="bspl2.JPG" width="60%" alt="iPhone Timetable Display">
       <br>
-      <i>Figure 3. iPhone displaying the departure timetable (via the <b>Kiosker</b> app).</i>
+      <i>Figure 3. Kindle displaying the departure timetable.</i>
     </td>
   </tr>
 </table>
