@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm install --legacy-peer-deps && npm install --legacy-peer-deps --no-save @parcel/watcher-linux-x64-glibc @tailwindcss/oxide-linux-x64-gnu lightningcss-linux-x64-gnu",
   "buildCommand": "chmod a+x build.sh && ./build.sh",
   "outputDirectory": "public"
 }

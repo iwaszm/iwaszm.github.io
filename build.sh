@@ -15,6 +15,7 @@ main() {
   NODE_VERSION=22.20.0
 
   export TZ=Europe/Oslo
+  mkdir -p "${HOME}/.local"
 
   # Install Dart Sass
   echo "Installing Dart Sass ${DART_SASS_VERSION}..."
@@ -54,9 +55,13 @@ main() {
 
   # Configure Git
   echo "Configuring Git..."
-  git config core.quotepath false
-  if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
-    git fetch --unshallow
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git config core.quotepath false
+    if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+      git fetch --unshallow
+    fi
+  else
+    echo "Skipping Git configuration: build directory is not a Git checkout."
   fi
 
   # Build the site
