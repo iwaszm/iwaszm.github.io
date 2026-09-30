@@ -11,6 +11,7 @@ sections:
     content:
       title: Projekte
       text: Eine Auswahl von Projekten, an denen ich gearbeitet habe.
+      count: 0
       filters:
         language: en
         folders:

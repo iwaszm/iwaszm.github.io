@@ -6,7 +6,7 @@ type: landing
 
 design:
   # Default section spacing
-  spacing: '6rem'
+  spacing: '0'
 
 sections:
   - block: resume-biography-3
@@ -46,6 +46,7 @@ sections:
     id: projects
     content:
       title: Selected Projects
+      count: 0
       filters:
         folders:
           - projects

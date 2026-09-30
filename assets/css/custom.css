@@ -1,24 +1,358 @@
-/* 1. 引入 Inter 字体 */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
 
-/* 2. 覆盖 Tailwind 和 Hugo Blox 的默认字体变量 */
 :root {
-  /* 设置无衬线字体 (Sans) 为 Inter */
-  --font-sans: "Inter", sans-serif;
-  
-  /* 为了保险，同时覆盖可能用到的标题和正文变量 */
-  --font-body: "Inter", sans-serif;
-  --font-heading: "Inter", sans-serif;
+  --font-sans: 'DM Sans', Arial, sans-serif;
+  --font-body: 'DM Sans', Arial, sans-serif;
+  --font-heading: 'Manrope', 'DM Sans', Arial, sans-serif;
+  --site-ink: #1e2926;
+  --site-muted: #56645e;
+  --site-accent: #087a68;
+  --site-line: #dbe3df;
+  --site-surface: #f5f8f6;
 }
 
-/* 3. 强制应用字体 (作为兜底方案) */
-body, h1, h2, h3, h4, h5, h6, .prose {
-  font-family: "Inter", sans-serif !important;
+html { scroll-behavior: smooth; }
+body, .prose { font-family: var(--font-body); }
+body { color: var(--site-ink); background: #fff; }
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+  font-family: var(--font-heading);
+  letter-spacing: 0;
+}
+::selection { color: #fff; background: var(--site-accent); }
+:focus-visible { outline: 2px solid var(--site-accent); outline-offset: 3px; }
+
+.page-header {
+  border-bottom: 1px solid var(--site-line);
+  background: rgb(255 255 255 / 94%);
+  backdrop-filter: blur(12px);
+}
+.page-header .navbar {
+  max-width: 86rem;
+  min-height: 4.25rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+}
+.navbar-brand { color: var(--site-ink); font-size: 1.25rem; font-weight: 800; }
+.navbar-nav .nav-link { font-size: .9rem; font-weight: 600; }
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link.active { color: var(--site-accent); }
+.language-switch { display: inline-flex; align-items: center; gap: .2rem; white-space: nowrap; font-family: var(--font-heading); font-size: .75rem; font-weight: 700; }
+.language-switch a { display: inline-flex; align-items: center; min-height: 2.5rem; padding-inline: .2rem; color: var(--site-muted); text-decoration: none; }
+.language-switch a:hover { color: var(--site-accent); }
+.language-switch a[aria-current="page"] { color: var(--site-ink); text-decoration: underline; text-decoration-color: var(--site-accent); text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.language-switch span { color: var(--site-muted); }
+
+/* The home profile reads as one editorial spread, not a stack of panels. */
+#section-resume-biography-3,
+#section-resume-biography-3 .home-section-bg {
+  background: var(--site-surface) !important;
+}
+#section-resume-biography-3 {
+  padding-block: 0 !important;
+  border-bottom: 1px solid var(--site-line);
+}
+#section-resume-biography-3 .resume-biography {
+  padding: clamp(2.5rem, 5vw, 5rem) clamp(1.25rem, 3vw, 2.5rem);
+}
+#section-resume-biography-3 .max-w-7xl { max-width: 82rem; }
+#section-resume-biography-3 .resume-biography > div > .grid {
+  gap: clamp(2.5rem, 5vw, 5.5rem);
+}
+#section-resume-biography-3 .avatar-wrapper {
+  width: 148px !important;
+  height: 148px !important;
+  margin-bottom: .25rem;
+}
+#section-resume-biography-3 .avatar {
+  width: 148px !important;
+  height: 148px !important;
+  border: 0;
+  box-shadow: none;
+}
+#section-resume-biography-3 h1 {
+  color: var(--site-ink);
+  font-size: clamp(2.15rem, 3.4vw, 3.75rem);
+  line-height: 1.08;
+  font-weight: 800;
+  white-space: nowrap;
+}
+#section-resume-biography-3 .text-primary-600 { color: var(--site-accent); }
+#section-resume-biography-3 .md\:col-span-4 > .flex a {
+  border: 1px solid var(--site-line);
+  background: #fff;
+  box-shadow: none;
+  color: var(--site-ink);
+  transition: border-color .2s ease, transform .2s ease;
+}
+#section-resume-biography-3 .md\:col-span-4 > .flex a:hover {
+  border-color: var(--site-accent);
+  transform: translateY(-2px);
+}
+#section-resume-biography-3 .md\:col-span-8 > div { margin-bottom: 2.5rem; }
+#section-resume-biography-3 .md\:col-span-8 > div:last-child { margin-bottom: 0; }
+#section-resume-biography-3 .md\:col-span-8 > div:nth-child(2) { display: none; }
+#section-resume-biography-3 .md\:col-span-8 .flex-shrink-0.w-12 { display: none; }
+#section-resume-biography-3 .md\:col-span-8 h2,
+#section-resume-biography-3 .md\:col-span-8 h3 {
+  color: var(--site-ink);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+#section-resume-biography-3 .md\:col-span-8 .flex.items-center { margin-bottom: 1rem; }
+#section-resume-biography-3 .bio-text > div {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--site-ink);
+  font-size: 1.08rem;
+  line-height: 1.75;
+  text-align: left;
+}
+#section-resume-biography-3 .md\:col-span-8 .grid > .group {
+  padding: 1rem 0 0;
+  border: 0;
+  border-top: 1px solid #bfcec7;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  transform: none;
+}
+#section-resume-biography-3 .md\:col-span-8 .grid > .group .w-12 { display: none; }
+#section-resume-biography-3 .md\:col-span-8 .grid > .group p:first-child {
+  color: var(--site-ink);
+  font-size: 1rem;
+}
+#section-resume-biography-3 .md\:col-span-8 .grid > .group p:last-child {
+  color: var(--site-muted);
+  font-size: .9rem;
 }
 
-/* x. 滚动高亮效果的基础样式 */
-.scroll-reveal {
-  transition: opacity 0.1s linear, font-weight 0.1s linear; /* 线性过渡，跟随滚轮 */
-  will-change: opacity, font-weight; /* 性能优化 */
-  opacity: 0.1; /* 默认状态：几乎不可见 */
+#papers, #projects { padding-block: clamp(3.5rem, 6vw, 6rem) !important; }
+#projects { background: #f8f7f3; }
+#papers > .flex.max-w-prose, #projects > .flex.max-w-prose {
+  max-width: 82rem;
+  align-items: flex-start;
+  padding-inline: clamp(1.25rem, 3vw, 2.5rem);
+}
+#papers > .flex.max-w-prose > div, #projects > .flex.max-w-prose > div {
+  margin-bottom: 1rem;
+  color: var(--site-ink);
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 2.6vw, 2.35rem);
+  font-weight: 800;
+}
+#papers > .flex.flex-col.items-center.px-6,
+#projects > .flex.flex-col.items-center.px-6 {
+  padding-inline: clamp(1.25rem, 3vw, 2.5rem);
+}
+#papers .container, #projects .container {
+  width: 100%;
+  max-width: 82rem;
+  padding: 0;
+}
+#papers .container > .grid, #projects .container > .grid { gap: 1.25rem; }
+#papers [role='article'], #projects [role='article'] {
+  overflow: hidden;
+  border: 1px solid var(--site-line);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: none;
+  backdrop-filter: none;
+  transition: border-color .2s ease, transform .2s ease;
+}
+#papers [role='article']:hover, #projects [role='article']:hover {
+  border-color: var(--site-accent);
+  box-shadow: none;
+  transform: translateY(-2px);
+}
+#papers [role='article'] .aspect-\[16\/9\],
+#projects [role='article'] .aspect-\[16\/9\] { background: #edf2ef; }
+#papers [role='article'] img, #projects [role='article'] img { object-fit: contain; }
+#papers [role='article'] .p-8, #projects [role='article'] .p-8 { padding: 1.35rem; }
+#papers [role='article'] h3, #projects [role='article'] h3 {
+  color: var(--site-ink);
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+#papers [role='article'] h3 a:hover, #projects [role='article'] h3 a:hover {
+  color: var(--site-accent);
+}
+
+/* The left archive menu duplicated the header and squeezed the reading column. */
+.page-body > .mx-auto.flex:has(> article) {
+  width: 100%;
+  max-width: 92rem;
+  padding-inline: clamp(1rem, 2.5vw, 2.5rem);
+  gap: clamp(1rem, 2vw, 2rem);
+}
+.page-body > .mx-auto.flex > article { padding: 0 0 4rem; }
+.page-body > .mx-auto.flex > article > main { max-width: 56rem; padding: 0; }
+.page-body > .mx-auto.flex > article > main > .max-w-prose {
+  width: 100%;
+  max-width: none;
+}
+.page-body > .mx-auto.flex > article h1 {
+  max-width: 26ch;
+  margin-top: .5rem;
+  color: var(--site-ink);
+  font-size: clamp(2rem, 3.5vw, 3.25rem);
+  line-height: 1.14;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.page-body > .mx-auto.flex > article h1 + div { margin-bottom: 2.75rem; }
+.page-body > .mx-auto.flex > article .prose {
+  width: 100%;
+  max-width: none;
+  color: var(--site-ink);
+  font-size: 1.1rem;
+  line-height: 1.75;
+}
+.page-body > .mx-auto.flex > article .prose .max-w-prose { max-width: none; }
+.page-body > .mx-auto.flex > article .prose p,
+.page-body > .mx-auto.flex > article .prose ul,
+.page-body > .mx-auto.flex > article .prose ol {
+  max-width: none;
+  text-align: left;
+}
+.page-body > .mx-auto.flex > article .prose h2,
+.page-body > .mx-auto.flex > article .prose h3 {
+  color: var(--site-ink);
+  font-family: var(--font-heading);
+  line-height: 1.25;
+}
+.page-body > .mx-auto.flex > article .prose a {
+  color: var(--site-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.page-body > .mx-auto.flex > article .prose img,
+.page-body > .mx-auto.flex > article .prose iframe,
+.page-body > .mx-auto.flex > article .prose figure,
+.page-body > .mx-auto.flex > article .prose table { max-width: 100%; }
+.page-body > .mx-auto.flex > article .prose iframe { width: 100%; border-radius: 6px; }
+.page-body > .mx-auto.flex > article .featured-image-wrapper {
+  width: 100%;
+  max-width: 100% !important;
+  max-height: none !important;
+  margin: 1.5rem 0 2.75rem;
+}
+.page-body > .mx-auto.flex > article .featured-image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.page-body > .mx-auto.flex > article .figure-caption,
+.page-body > .mx-auto.flex > article .article-header-caption {
+  color: var(--site-muted);
+  font-size: .85rem;
+  line-height: 1.5;
+}
+.page-body .hb-toc { width: 13rem; color: var(--site-muted); }
+.page-body .hb-toc a:hover { color: var(--site-accent); }
+
+.bvg-device-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-block: 1.5rem;
+}
+.bvg-device-gallery figure { min-width: 0; margin: 0; }
+.bvg-device-gallery img {
+  display: block;
+  width: 100%;
+  max-height: 34rem;
+  margin: 0;
+  object-fit: contain;
+}
+.bvg-device-gallery figcaption { margin-top: .75rem; }
+
+.dark body, .dark .page-header {
+  --site-ink: #edf2ee;
+  --site-muted: #bdcbc3;
+  --site-accent: #72dac1;
+  --site-line: #35453e;
+  --site-surface: #202d28;
+  background: #17221e;
+}
+.dark .page-header { background: rgb(23 34 30 / 94%); }
+.dark #section-resume-biography-3 .md\:col-span-4 > .flex a,
+.dark #papers [role='article'], .dark #projects [role='article'] { background: #23312b; }
+.dark #projects { background: #1c2923; }
+.dark #section-resume-biography-3 .avatar-wrapper + .space-y-3 p,
+.dark #section-resume-biography-3 .bio-text,
+.dark #papers [role='article'] p,
+.dark #projects [role='article'] p { color: var(--site-muted); }
+.dark #section-resume-biography-3 .md\:col-span-8 h2,
+.dark #papers [role='article'] h3,
+.dark #projects [role='article'] h3 { color: var(--site-ink); }
+.dark #section-resume-biography-3 .flex.flex-wrap > span,
+.dark #papers [role='article'] .inline-flex,
+.dark #projects [role='article'] .inline-flex {
+  border-color: #3a6456;
+  background: #264339;
+  color: #a9e2d0;
+}
+.dark #papers [role='article'] .aspect-\[16\/9\],
+.dark #projects [role='article'] .aspect-\[16\/9\] { background: #304038; }
+
+@media (min-width: 1280px) {
+  .page-body > .mx-auto.flex > .hb-sidebar-container { display: none; }
+}
+@media (max-width: 1023px) {
+  #section-resume-biography-3 .resume-biography > div > .grid { gap: 2.5rem; }
+  #section-resume-biography-3 .resume-biography > div > .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #section-resume-biography-3 .md\:col-span-4,
+  #section-resume-biography-3 .md\:col-span-8 { grid-column: 1 / -1; }
+  #section-resume-biography-3 .md\:col-span-8 .grid,
+  #papers .container > .grid, #projects .container > .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 767px) {
+  #section-resume-biography-3 .resume-biography > div > .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #section-resume-biography-3 .md\:col-span-4 { align-items: flex-start; text-align: left; }
+  #section-resume-biography-3 .md\:col-span-4 > .flex { justify-content: flex-start; }
+  .page-body > .mx-auto.flex > article .prose { font-size: 1.025rem; line-height: 1.7; }
+  .page-body > .mx-auto.flex > article .prose iframe {
+    height: clamp(320px, 72vw, 520px);
+  }
+  .page-body > .mx-auto.flex > article .prose table:has(img),
+  .page-body > .mx-auto.flex > article .prose table:has(img) tbody,
+  .page-body > .mx-auto.flex > article .prose table:has(img) tr,
+  .page-body > .mx-auto.flex > article .prose table:has(img) td {
+    display: block;
+    width: 100%;
+  }
+}
+@media (max-width: 639px) {
+  .bvg-device-gallery { grid-template-columns: minmax(0, 1fr); }
+  #section-resume-biography-3 .resume-biography {
+    padding-block: 2rem;
+  }
+  #section-resume-biography-3 h1 { font-size: 2.15rem; }
+  #section-resume-biography-3 .bio-text > div {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+  #section-resume-biography-3 .md\:col-span-8 .grid,
+  #papers .container > .grid, #projects .container > .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #section-resume-biography-3 .avatar-wrapper,
+  #section-resume-biography-3 .avatar {
+    width: 116px !important;
+    height: 116px !important;
+  }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  #section-resume-biography-3 .resume-biography { padding-block: 2rem; }
+  .page-body > .mx-auto.flex > article .prose iframe { height: 75vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #papers [role='article'], #projects [role='article'] { transition: none; }
 }

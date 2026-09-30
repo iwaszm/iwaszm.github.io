@@ -4,7 +4,7 @@ date: 2025-10-21
 type: landing
 
 design:
-  spacing: '6rem'
+  spacing: '0'
 
 sections:
   - block: resume-biography-3
@@ -41,6 +41,7 @@ sections:
     id: projects
     content:
       title: Ausgewählte Projekte
+      count: 0
       filters:
         language: en
         folders:

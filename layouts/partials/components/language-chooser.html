@@ -1,18 +1,21 @@
 {{ $page := .page }}
 {{ $class := .class }}
+{{ $enURL := "/" | relURL }}
+{{ $deURL := "/de/" | relURL }}
 
-{{- if $page.IsTranslated -}}
-  <div class="flex justify-items-start {{ with $class }}{{ . | safeCSS }}{{ end }}">
-    {{ range first 1 $page.Translations }}
-      <a
-        href="{{ .Permalink }}"
-        class="inline-flex h-7 min-w-9 items-center justify-center rounded-md px-2 text-xs font-semibold uppercase tracking-normal text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-950 dark:text-gray-300 dark:hover:bg-primary-100/5 dark:hover:text-white"
-        hreflang="{{ .Lang }}"
-        aria-label="Switch language to {{ index site.Data.languages .Lang }}"
-        title="{{ index site.Data.languages .Lang }}"
-      >
-        {{ $page.Lang | upper }}
-      </a>
-    {{ end }}
-  </div>
-{{- end -}}
+{{ range site.Sites }}
+  {{ if eq .Language.Lang "en" }}{{ $enURL = .Home.RelPermalink }}{{ end }}
+  {{ if eq .Language.Lang "de" }}{{ $deURL = .Home.RelPermalink }}{{ end }}
+{{ end }}
+{{ if eq $page.Lang "en" }}{{ $enURL = $page.RelPermalink }}{{ end }}
+{{ if eq $page.Lang "de" }}{{ $deURL = $page.RelPermalink }}{{ end }}
+{{ range $page.Translations }}
+  {{ if eq .Lang "en" }}{{ $enURL = .RelPermalink }}{{ end }}
+  {{ if eq .Lang "de" }}{{ $deURL = .RelPermalink }}{{ end }}
+{{ end }}
+
+<nav class="language-switch {{ with $class }}{{ . }}{{ end }}" aria-label="Language">
+  <a href="{{ $enURL }}" hreflang="en" lang="en" {{ if eq $page.Lang "en" }}aria-current="page"{{ end }}>EN</a>
+  <span aria-hidden="true">|</span>
+  <a href="{{ $deURL }}" hreflang="de" lang="de" {{ if eq $page.Lang "de" }}aria-current="page"{{ end }}>DE</a>
+</nav>
