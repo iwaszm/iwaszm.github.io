@@ -66,7 +66,7 @@ main() {
 
   # Build the site
   echo "Building the site"
-  hugo --gc --minify --baseURL "https://${VERCEL_PROJECT_PRODUCTION_URL}"
+  hugo --gc --minify --baseURL "https://zhang-meng.com/"
 
 }
 

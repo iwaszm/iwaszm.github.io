@@ -1,4 +1,4 @@
-baseURL: "https://zhangmeng43.com/"
+baseURL: "https://zhang-meng.com/"
 goldmark:
   renderer:
     unsafe: true
